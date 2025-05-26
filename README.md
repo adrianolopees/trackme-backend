@@ -156,7 +156,7 @@ Este backend pode ser hospedado em qualquer ambiente Node.js. O banco de dados f
 
 Desenvolvido por **Adriano Dev**
 
-* GitHub: [@seuGitHub](https://github.com/seuGitHub)
+* GitHub: [@seuGitHub](https://github.com/adrianolopees)
 * Projeto TrackMe - Em desenvolvimento!
 
 ---
