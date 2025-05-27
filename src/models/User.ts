@@ -58,10 +58,12 @@ User.init(
       allowNull: false,
     },
     isAdmin: {
+      field: "is_admin",
       type: DataTypes.BOOLEAN,
       defaultValue: false,
     },
     profilePicture: {
+      field: "profile_photo",
       type: DataTypes.STRING,
       allowNull: true,
     },
