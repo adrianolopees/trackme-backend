@@ -8,12 +8,12 @@ dotenv.config();
 const startServer = async () => {
   try {
     await sequelize.sync();
-    console.log("🟢 Banco conectado e modelos sincronizados!");
+    console.log("🟢 Database connected and models synchronized!");
 
     const port = process.env.PORT || 3000;
-    app.listen(port, () => console.log(`Server rodando na porta ${port}`));
+    app.listen(port, () => console.log(`Server running on port ${port}`));
   } catch (error) {
-    console.error("Erro ao conectar ao banco:", error);
+    console.error("Error connecting to the database:", error);
   }
 };
 
