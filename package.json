@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "yarn tsx watch src/server.ts",
     "build": "yarn tsc",
-    "start": "node dist/server.js"
+    "start": "node dist/server.js",
+    "migrate": "yarn sequelize-cli db:migrate",
+    "migrate:undo": "yarn sequelize-cli db:migrate:undo"
   },
   "repository": {
     "type": "git",
