@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 import { registerSchema } from "../validators/userValidator";
 import { loginSchema } from "../validators/userValidator";
 import { JWT_SECRET } from "../config/jwtConfig";
-import User from "../models/User";
+import User from "../models/User"; // Adjust the import path as necessary
 import { Op } from "sequelize";
 
 export const register = async (req: Request, res: Response) => {
@@ -34,10 +34,7 @@ export const register = async (req: Request, res: Response) => {
     const newUser = await User.create({
       username,
       email,
-      name,
-      password: hashedPassword,
-      profilePicture,
-      isAdmin: false, // Set default value or adjust as needed
+      password_hash: hashedPassword,
     });
 
     res.status(201).json({
@@ -46,7 +43,6 @@ export const register = async (req: Request, res: Response) => {
         id: newUser.id,
         username: newUser.username,
         email: newUser.email,
-        name: newUser.name,
       },
     });
   } catch (error) {
@@ -79,7 +75,7 @@ export const login = async (req: Request, res: Response) => {
       return res.status(400).json({ message: "Usuário não encontrado!" });
     }
 
-    const isPasswordValid = await bcrypt.compare(password, user.password);
+    const isPasswordValid = await bcrypt.compare(password, user.password_hash);
     if (!isPasswordValid) {
       return res.status(400).json({ message: "Senha inválida!" });
     }
@@ -91,7 +87,6 @@ export const login = async (req: Request, res: Response) => {
       {
         id: user.id,
         username: user.username,
-        isAdmin: user.isAdmin,
       },
       JWT_SECRET as string,
       { expiresIn: "1h" }
@@ -102,7 +97,6 @@ export const login = async (req: Request, res: Response) => {
       token,
       user: {
         id: user.id,
-        name: user.name,
         email: user.email,
         username: user.username,
       },

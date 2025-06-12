@@ -1,21 +1,17 @@
+// src/models/User.ts
 import { DataTypes, Model, Optional } from "sequelize";
-import sequelize from "../config/database"; // Ajuste esse caminho conforme sua estrutura
+import sequelize from "../config/database";
 
-// Tipagem dos atributos
 interface UserAttributes {
   id: number;
   username: string;
   email: string;
-  name: string;
-  password: string;
-  isAdmin: boolean;
-  profilePicture?: string | null;
-  createdAt?: Date;
+  password_hash: string;
+  created_at?: Date;
 }
 
-// Tipagem para criação (id e createdAt são automáticos)
 interface UserCreationAttributes
-  extends Optional<UserAttributes, "id" | "createdAt" | "profilePicture"> {}
+  extends Optional<UserAttributes, "id" | "created_at"> {}
 
 class User
   extends Model<UserAttributes, UserCreationAttributes>
@@ -24,14 +20,10 @@ class User
   public id!: number;
   public username!: string;
   public email!: string;
-  public name!: string;
-  public password!: string;
-  public isAdmin!: boolean;
-  public profilePicture!: string | null;
-  public readonly createdAt!: Date;
+  public password_hash!: string;
+  public created_at?: Date;
 }
 
-// Inicializa o model no Sequelize
 User.init(
   {
     id: {
@@ -42,40 +34,25 @@ User.init(
     username: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique: true,
     },
     email: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique: true,
     },
-    name: {
+    password_hash: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    password: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    isAdmin: {
-      field: "is_admin",
-      type: DataTypes.BOOLEAN,
-      defaultValue: false,
-    },
-    profilePicture: {
-      field: "profile_photo",
-      type: DataTypes.STRING,
-      allowNull: true,
-    },
-    createdAt: {
+    created_at: {
       type: DataTypes.DATE,
       defaultValue: DataTypes.NOW,
     },
   },
   {
     sequelize,
+    modelName: "User",
     tableName: "Users",
-    timestamps: false, // Se quiser `updatedAt`, coloque `true`
+    timestamps: false,
   }
 );
 
