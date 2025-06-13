@@ -17,11 +17,11 @@ class User
   extends Model<UserAttributes, UserCreationAttributes>
   implements UserAttributes
 {
-  public id!: number;
-  public username!: string;
-  public email!: string;
-  public password_hash!: string;
-  public created_at?: Date;
+  declare id: number;
+  declare username: string;
+  declare email: string;
+  declare password_hash: string;
+  declare created_at?: Date;
 }
 
 User.init(

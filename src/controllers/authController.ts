@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 import { registerSchema } from "../validators/userValidator";
 import { loginSchema } from "../validators/userValidator";
 import { JWT_SECRET } from "../config/jwtConfig";
-import User from "../models/User"; // Adjust the import path as necessary
+import User from "../models/User";
 import { Op } from "sequelize";
 
 export const register = async (req: Request, res: Response) => {
@@ -16,7 +16,7 @@ export const register = async (req: Request, res: Response) => {
     });
   }
 
-  const { username, email, name, password, profilePicture } = req.body;
+  const { username, email, password } = req.body;
 
   try {
     const existingUser = await User.findOne({
