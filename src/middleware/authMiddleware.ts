@@ -10,20 +10,22 @@ const authenticateToken = (
   req: CustomRequest,
   res: Response,
   next: NextFunction
-) => {
+): void => {
   const authHeader = req.headers.authorization;
 
   // token deve vir no formato: "Bearer <token>"
   const token = authHeader && authHeader.split(" ")[1];
 
   if (!token) {
-    return res.status(401).json({ message: "Token não fornecido" });
+    res.status(401).json({ message: "Token não fornecido" });
+    return;
   }
 
   if (!JWT_SECRET) {
-    return res
+    res
       .status(500)
       .json({ message: "JWT_SECRET não está definido no ambiente" });
+    return;
   }
 
   try {
@@ -31,7 +33,8 @@ const authenticateToken = (
     req.user = decoded; // armazena os dados do token na req
     next(); // segue a proxima etapa (rota protegida)
   } catch (error) {
-    return res.status(403).json({ message: "Token inválido ou expirado!" });
+    res.status(403).json({ message: "Token inválido ou expirado!" });
+    return;
   }
 };
 
