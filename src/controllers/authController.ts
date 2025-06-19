@@ -1,14 +1,10 @@
-import { Request, Response, NextFunction } from "express";
+import { Request, Response } from "express";
 import { registerSchema, loginSchema } from "../validators/userValidator";
 import User from "../models/User";
 import { Op } from "sequelize";
 import { AuthService } from "../services/authService";
 
-export const register = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-): Promise<void> => {
+export const register = async (req: Request, res: Response): Promise<void> => {
   const validation = registerSchema.safeParse(req.body);
   if (!validation.success) {
     res.status(400).json({
@@ -55,11 +51,7 @@ export const register = async (
   }
 };
 
-export const login = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-): Promise<void> => {
+export const login = async (req: Request, res: Response): Promise<void> => {
   const validation = loginSchema.safeParse(req.body);
 
   if (!validation.success) {
