@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 import { registerSchema, loginSchema } from "../validators/userValidator";
-import User from "../models/User";
 import { Op } from "sequelize";
 import { AuthService } from "../services/authService";
+import { Profile } from "../models/Profile";
 
 export const register = async (req: Request, res: Response): Promise<void> => {
   const validation = registerSchema.safeParse(req.body);
@@ -14,10 +14,10 @@ export const register = async (req: Request, res: Response): Promise<void> => {
     return;
   }
 
-  const { username, email, password } = req.body;
+  const { username, email, password, name } = req.body;
 
   try {
-    const existingUser = await User.findOne({
+    const existingUser = await Profile.findOne({
       where: {
         [Op.or]: [{ username }, { email }],
       },
@@ -30,10 +30,13 @@ export const register = async (req: Request, res: Response): Promise<void> => {
 
     const hashedPassword = await AuthService.hashPassword(password);
 
-    const newUser = await User.create({
+    const newUser = await Profile.create({
       username,
       email,
-      password_hash: hashedPassword,
+      password: hashedPassword,
+      name,
+      bio: req.body.bio || null,
+      avatar: req.body.avatar || null,
     });
 
     res.status(201).json({
@@ -67,18 +70,18 @@ export const login = async (req: Request, res: Response): Promise<void> => {
   try {
     const isEmail = AuthService.isEmail(identifier);
 
-    const user = await User.findOne({
+    const profile = await Profile.findOne({
       where: isEmail ? { email: identifier } : { username: identifier },
     });
 
-    if (!user) {
+    if (!profile) {
       res.status(401).json({ message: "Credenciais inválidas!" });
       return;
     }
 
     const isPasswordValid = await AuthService.comparePassword(
       password,
-      user.password_hash
+      profile.password
     );
     if (!isPasswordValid) {
       res.status(401).json({ message: "Credenciais inválidas!" });
@@ -86,17 +89,17 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     }
 
     const token = AuthService.generateToken({
-      id: user.id,
-      username: user.username,
+      id: profile.id,
+      username: profile.username,
     });
 
     res.json({
       message: "Login bem-sucedido!",
       token,
       user: {
-        id: user.id,
-        email: user.email,
-        username: user.username,
+        id: profile.id,
+        email: profile.email,
+        username: profile.username,
       },
     });
   } catch (error: any) {

@@ -1,31 +1,40 @@
+// src/models/Post.ts
 import { DataTypes, Model, Optional } from "sequelize";
-import sequelize from "../config/database"; // seu arquivo de conexão
+import sequelize from "../config/database";
 
 interface PostAttributes {
   id: number;
-  user_id: number;
-  title: string;
-  content?: string | null;
-  playlist_id?: number | null;
-  created_at?: Date;
+  img?: Buffer;
+  caption: string;
+  visibility: number;
+  playlistId?: number;
+  profileId: number;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 interface PostCreationAttributes
   extends Optional<
     PostAttributes,
-    "id" | "content" | "playlist_id" | "created_at"
+    "id" | "img" | "playlistId" | "createdAt" | "updatedAt"
   > {}
 
 class Post
   extends Model<PostAttributes, PostCreationAttributes>
   implements PostAttributes
 {
-  public id!: number;
-  public user_id!: number;
-  public title!: string;
-  public content!: string | null;
-  public playlist_id!: number | null;
-  public readonly created_at!: Date;
+  declare id: number;
+  declare img?: Buffer;
+  declare caption: string;
+  declare visibility: number;
+  declare playlistId?: number;
+  declare profileId: number;
+  declare readonly createdAt: Date;
+  declare readonly updatedAt: Date;
+
+  // Associações serão definidas depois
+  declare Profile?: any;
+  declare Playlist?: any;
 }
 
 Post.init(
@@ -34,25 +43,33 @@ Post.init(
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
+    },
+    img: {
+      type: DataTypes.BLOB,
+      allowNull: true,
+    },
+    caption: {
+      type: DataTypes.STRING(255),
       allowNull: false,
     },
-    user_id: {
+    visibility: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    title: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    content: {
-      type: DataTypes.TEXT,
-      allowNull: true,
-    },
-    playlist_id: {
+    playlistId: {
       type: DataTypes.INTEGER,
       allowNull: true,
     },
-    created_at: {
+    profileId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    createdAt: {
+      type: DataTypes.DATE,
+      allowNull: false,
+      defaultValue: DataTypes.NOW,
+    },
+    updatedAt: {
       type: DataTypes.DATE,
       allowNull: false,
       defaultValue: DataTypes.NOW,
@@ -60,11 +77,10 @@ Post.init(
   },
   {
     sequelize,
-    tableName: "Posts",
-    timestamps: false, // ou true, se quiser updatedAt etc
+    modelName: "Post",
+    tableName: "Post",
+    timestamps: true,
   }
 );
 
-export default Post;
-// Exportando o modelo Post
-// para ser usado em outros arquivos
+export { Post };
