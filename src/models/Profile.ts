@@ -2,23 +2,10 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import sequelize from "../config/database";
 
-interface ProfileAttributes {
-  id: number;
-  username: string;
-  email: string;
-  password: string;
-  name: string;
-  bio?: string;
-  avatar?: Buffer;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-interface ProfileCreationAttributes
-  extends Optional<
-    ProfileAttributes,
-    "id" | "bio" | "avatar" | "createdAt" | "updatedAt"
-  > {}
+import {
+  ProfileAttributes,
+  ProfileCreationAttributes,
+} from "../interfaces/Profile";
 
 class Profile
   extends Model<ProfileAttributes, ProfileCreationAttributes>
