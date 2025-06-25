@@ -34,7 +34,7 @@ export class AuthService {
     return emailRegex.test(identifier);
   }
 
-  // 🚀 Mover para cá a lógica de criação
+  // Lógica de registro de usuário
   static async register(data: {
     username: string;
     email: string;
@@ -68,14 +68,13 @@ export class AuthService {
     };
   }
 
-  // 🚀 Mover para cá a lógica do login
+  //  Lógica de login de usuário
   static async login(identifier: string, password: string) {
     const isEmail = AuthService.isEmail(identifier);
 
     const profile = await Profile.findOne({
       where: isEmail ? { email: identifier } : { username: identifier },
     });
-
     if (!profile) {
       throw new Error("Credenciais inválidas!");
     }
