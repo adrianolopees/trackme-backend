@@ -1,18 +1,25 @@
-import { Request, Response } from "express";
+import { Response } from "express";
 import { ProfileService } from "../services/profileService";
+import { ProfilePublicAttributes } from "../interfaces/Profile";
+import { AuthenticatedRequest } from "../interfaces/AuthenticatedRequest";
 
 const profileService = new ProfileService();
 
-export const getMyProfile = async (req: any, res: Response): Promise<void> => {
+// GET /profile/my
+export const getMyProfile = async (
+  req: AuthenticatedRequest,
+  res: Response
+): Promise<void> => {
   try {
-    const userId = req.user.id;
-    const profile = await profileService.getMyProfile(userId);
+    const profile = await profileService.getMyProfile(req.user.id);
 
-    res.json({
-      message: "Perfil obtido com sucesso",
-      profile,
-    });
+    if (!profile) {
+      res.status(404).json({ message: "Perfil não encontrado!" });
+      return;
+    }
+
+    res.json(profile);
   } catch (error) {
-    res.status(404).json({ message: "Perfil não encontrado!" });
+    res.status(500).json({ message: "Perfil não encontrado!" });
   }
 };

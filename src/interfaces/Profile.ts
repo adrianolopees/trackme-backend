@@ -36,8 +36,6 @@ export interface ProfileLoginAttributes {
 
 // Para ATUALIZAÇÃO DE PERFIL - sem email e password
 export interface ProfileUpdateAttributes {
-  username?: string;
-  name?: string;
   bio?: string;
   avatar?: Buffer;
 }
