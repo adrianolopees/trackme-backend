@@ -18,7 +18,7 @@ export class ProfileService {
   }
 
   // Atualizar perfil do usuário logado
-  async updateProfila(
+  async updateProfile(
     profileId: number,
     updates: ProfileUpdateAttributes
   ): Promise<ProfilePublicAttributes | null> {
