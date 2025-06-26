@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { registerSchema, loginSchema } from "../validators/userValidator";
+import { registerSchema, loginSchema } from "../validators/profileValidator";
 import { AuthService } from "../services/authService";
 
 export const register = async (req: Request, res: Response): Promise<void> => {

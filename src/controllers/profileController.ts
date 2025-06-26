@@ -1,11 +1,6 @@
-import { Response } from "express";
+import { Response, Request } from "express";
 import { ProfileService } from "../services/profileService";
-import {
-  ProfilePublicAttributes,
-  ProfileRegistrationAttributes,
-  ProfileUpdateAttributes,
-} from "../interfaces/Profile";
-import { AuthenticatedRequest } from "../interfaces/AuthenticatedRequest";
+import { profileUpdateSchema } from "../validators/profileValidator";
 
 const profileService = new ProfileService();
 
@@ -13,7 +8,7 @@ const profileId = 1; // Exemplo de ID de perfil, deve ser substituído pela lóg
 
 // GET /profile/my
 export const getMyProfile = async (
-  req: AuthenticatedRequest,
+  req: Request,
   res: Response
 ): Promise<void> => {
   try {
@@ -32,17 +27,27 @@ export const getMyProfile = async (
 
 //PATH /profile/update
 export const updateProfile = async (
-  req: AuthenticatedRequest,
+  req: Request,
   res: Response
 ): Promise<void> => {
-  try {
-    const updates: ProfileUpdateAttributes = req.body;
+  const validation = profileUpdateSchema.safeParse(req.body);
+  if (!validation.success) {
+    res.status(400).json({
+      message: "Dados inválidos!",
+      errors: validation.error.format(),
+    });
+    return;
+  }
+  const updates = validation.data;
 
+  try {
     const updated = await profileService.updateProfile(profileId, updates);
     if (!updated) {
       res.status(404).json({ message: "Perfil não encontrado!" });
       return;
     }
+
+    res.json({ message: "Perfil atualizado comj sucesso!", profile: updated });
   } catch (error) {
     res.status(500).json({ message: "Erro ao atualizar perfil!" });
     return;
@@ -50,7 +55,7 @@ export const updateProfile = async (
 };
 
 export const deleteAvatarAndBio = async (
-  req: AuthenticatedRequest,
+  req: Request,
   res: Response
 ): Promise<void> => {
   try {

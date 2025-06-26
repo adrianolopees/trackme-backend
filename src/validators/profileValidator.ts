@@ -15,3 +15,14 @@ export const loginSchema = z.object({
   identifier: z.string().min(3),
   password: z.string().min(6),
 });
+
+export const profileUpdateSchema = z.object({
+  username: z
+    .string()
+    .min(3, "Username deve ter ao menos 3 caracteres")
+    .optional(),
+  email: z.string().email("Email inválido").optional(),
+  name: z.string().min(2, "Nome deve ter pelo menos 2 caracteres").optional(),
+  bio: z.string().optional(),
+  avatar: z.instanceof(Buffer).optional(),
+});
