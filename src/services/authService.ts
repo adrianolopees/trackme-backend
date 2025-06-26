@@ -58,6 +58,7 @@ export class AuthService {
     const newProfile = await Profile.create({
       ...data,
       password: hashedPassword,
+      bio: data.bio ?? undefined,
       avatar: data.avatar ?? undefined,
     });
 
@@ -65,6 +66,9 @@ export class AuthService {
       id: newProfile.id,
       username: newProfile.username,
       email: newProfile.email,
+      name: newProfile.name,
+      bio: newProfile.bio,
+      avatar: newProfile.avatar,
     };
   }
 
@@ -95,7 +99,7 @@ export class AuthService {
 
     return {
       token,
-      user: {
+      profile: {
         id: profile.id,
         email: profile.email,
         username: profile.username,

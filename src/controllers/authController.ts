@@ -11,9 +11,9 @@ export const register = async (req: Request, res: Response): Promise<void> => {
     });
     return;
   }
-
+  const validatiedData = validation.data;
   try {
-    const user = await AuthService.register(req.body);
+    const user = await AuthService.register(validatiedData);
     res.status(201).json({
       message: "Usuário registrado com sucesso!",
       user,

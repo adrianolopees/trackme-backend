@@ -9,13 +9,15 @@ import { AuthenticatedRequest } from "../interfaces/AuthenticatedRequest";
 
 const profileService = new ProfileService();
 
+const profileId = 1; // Exemplo de ID de perfil, deve ser substituído pela lógica real
+
 // GET /profile/my
 export const getMyProfile = async (
   req: AuthenticatedRequest,
   res: Response
 ): Promise<void> => {
   try {
-    const profile = await profileService.getMyProfile(req.user.id);
+    const profile = await profileService.getMyProfile(profileId);
 
     if (!profile) {
       res.status(404).json({ message: "Perfil não encontrado!" });
@@ -36,7 +38,7 @@ export const updateProfile = async (
   try {
     const updates: ProfileUpdateAttributes = req.body;
 
-    const updated = await profileService.updateProfile(req.user.id, updates);
+    const updated = await profileService.updateProfile(profileId, updates);
     if (!updated) {
       res.status(404).json({ message: "Perfil não encontrado!" });
       return;
@@ -52,7 +54,7 @@ export const deleteAvatarAndBio = async (
   res: Response
 ): Promise<void> => {
   try {
-    const result = await profileService.clearAvatarAndBio(req.user.id);
+    const result = await profileService.clearAvatarAndBio(profileId);
     if (!result) {
       res.status(404).json({ message: "Perfil não encontrado!" });
       return;
