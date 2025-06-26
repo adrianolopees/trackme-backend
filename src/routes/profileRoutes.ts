@@ -1,8 +1,19 @@
-import { RequestHandler, Router } from "express";
-import { getMyProfile } from "../controllers/profileController";
+import { Router } from "express";
+import {
+  getMyProfile,
+  updateProfile,
+  deleteAvatarAndBio,
+} from "../controllers/profileController";
 
 const router = Router();
 
-router.get("/me", getMyProfile); // ✅ Aqui é a rota que você está tentando
+// GET /profile/me
+router.get("/me", getMyProfile);
+
+// PATCH /profile/update
+router.patch("/update", updateProfile);
+
+// DELETE /profile/avatar-bio
+router.delete("/avatar-bio", deleteAvatarAndBio);
 
 export default router;
