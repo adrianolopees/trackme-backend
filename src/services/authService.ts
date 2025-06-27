@@ -47,13 +47,15 @@ export class AuthService {
       throw new Error("Usuário ou email já existe!");
     }
 
-    const hashedPassword = await AuthService.hashPassword(data.password);
+    const hashedPassword = await this.hashPassword(data.password);
 
     const newProfile = await Profile.create({
-      ...data,
-      password: hashedPassword,
+      username: data.username,
+      email: data.email,
+      name: data.name ?? undefined,
       bio: data.bio ?? undefined,
       avatar: data.avatar ?? undefined,
+      password: hashedPassword,
     });
 
     return {
@@ -68,10 +70,8 @@ export class AuthService {
 
   //  Lógica de login de usuário
   static async login({ identifier, password }: LoginData) {
-    if (!identifier || !password) {
-      throw new Error("Identificador e senha são obrigatórios!");
-    }
     const isEmail = AuthService.isEmail(identifier);
+
     const profile = await Profile.findOne({
       where: isEmail ? { email: identifier } : { username: identifier },
     });
