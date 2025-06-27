@@ -1,28 +1,92 @@
 import { z } from "zod";
 
 export const registerSchema = z.object({
-  username: z.string().min(3, "Username deve ter ao menos 3 caracteres"),
-  email: z.string().email("Email inválido"),
-  password: z.string().min(6, "Senha deve ter pelo menos 6 caracteres"),
-  name: z.string().min(2, "Nome deve ter pelo menos 2 caracteres"),
+  username: z
+    .string({
+      required_error: "Username é obrigatório",
+      invalid_type_error: "Username deve ser um texto",
+    })
+    .min(3, "Username deve ter ao menos 3 caracteres"),
+
+  email: z
+    .string({
+      required_error: "Email é obrigatório",
+      invalid_type_error: "Email deve ser um texto",
+    })
+    .email("Email inválido"),
+
+  password: z
+    .string({
+      required_error: "Senha é obrigatória",
+      invalid_type_error: "Senha deve ser um texto",
+    })
+    .min(6, "Senha deve ter pelo menos 6 caracteres"),
+
+  name: z
+    .string({
+      required_error: "Nome é obrigatório",
+      invalid_type_error: "Nome deve ser um texto",
+    })
+    .min(2, "Nome deve ter pelo menos 2 caracteres"),
+
   bio: z.string().optional(),
-  avatar: z.instanceof(Buffer).optional(),
+
+  avatar: z
+    .instanceof(Buffer, {
+      message: "Avatar deve ser um arquivo de imagem",
+    })
+    .optional(),
+
   createdAt: z.date().optional(),
   updatedAt: z.date().optional(),
 });
 
 export const loginSchema = z.object({
-  identifier: z.string().min(3),
-  password: z.string().min(6),
+  identifier: z
+    .string({
+      required_error: "Identificador é obrigatório",
+      invalid_type_error: "Identificador deve ser um texto",
+    })
+    .min(3),
+
+  password: z
+    .string({
+      required_error: "Senha é obrigatória",
+      invalid_type_error: "Senha deve ser um texto",
+    })
+    .min(6),
 });
 
 export const profileUpdateSchema = z.object({
   username: z
-    .string()
+    .string({
+      required_error: "Username é obrigatório",
+      invalid_type_error: "Username deve ser um texto",
+    })
     .min(3, "Username deve ter ao menos 3 caracteres")
     .optional(),
-  email: z.string().email("Email inválido").optional(),
-  name: z.string().min(2, "Nome deve ter pelo menos 2 caracteres").optional(),
-  bio: z.string().optional(),
+  email: z
+    .string({
+      required_error: "Email é obrigatório",
+      invalid_type_error: "Email deve ser um texto",
+    })
+    .email("Email inválido")
+    .optional(),
+  name: z
+    .string({
+      required_error: "Nome é obrigatório",
+      invalid_type_error: "Nome deve ser um texto",
+    })
+    .min(2, "Nome deve ter pelo menos 2 caracteres")
+    .optional(),
+  bio: z
+    .string({
+      invalid_type_error: "Bio deve ser um texto",
+    })
+    .optional(),
   avatar: z.instanceof(Buffer).optional(),
 });
+
+export type RegisterData = z.infer<typeof registerSchema>;
+export type LoginData = z.infer<typeof loginSchema>;
+export type ProfileUpdateData = z.infer<typeof profileUpdateSchema>;

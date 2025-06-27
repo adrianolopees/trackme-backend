@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import { Op } from "sequelize";
 import { Profile } from "../models/Profile";
 import { JWT_SECRET } from "../config/jwtConfig";
+import { LoginData, RegisterData } from "../validators/profileValidator";
 
 export class AuthService {
   static async hashPassword(password: string): Promise<string> {
@@ -35,14 +36,7 @@ export class AuthService {
   }
 
   // Lógica de registro de usuário
-  static async register(data: {
-    username: string;
-    email: string;
-    password: string;
-    name: string;
-    bio?: string;
-    avatar?: Buffer | null;
-  }) {
+  static async register(data: RegisterData) {
     const existingProfile = await Profile.findOne({
       where: {
         [Op.or]: [{ username: data.username }, { email: data.email }],
@@ -73,9 +67,11 @@ export class AuthService {
   }
 
   //  Lógica de login de usuário
-  static async login(identifier: string, password: string) {
+  static async login({ identifier, password }: LoginData) {
+    if (!identifier || !password) {
+      throw new Error("Identificador e senha são obrigatórios!");
+    }
     const isEmail = AuthService.isEmail(identifier);
-
     const profile = await Profile.findOne({
       where: isEmail ? { email: identifier } : { username: identifier },
     });

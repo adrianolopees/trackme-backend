@@ -1,19 +1,20 @@
 import { Request, Response } from "express";
 import { registerSchema, loginSchema } from "../validators/profileValidator";
+import { validateData } from "../utils/validateData";
 import { AuthService } from "../services/authService";
 
 export const register = async (req: Request, res: Response): Promise<void> => {
-  const validation = registerSchema.safeParse(req.body);
+  const validation = validateData(registerSchema, req.body);
   if (!validation.success) {
     res.status(400).json({
-      message: "Dados inválidos",
-      errors: validation.error.format(),
+      message: validation.error,
+      errors: validation.issues,
     });
     return;
   }
-  const validatiedData = validation.data;
+  const validData = validation.data;
   try {
-    const user = await AuthService.register(validatiedData);
+    const user = await AuthService.register(validData);
     res.status(201).json({
       message: "Usuário registrado com sucesso!",
       user,
@@ -25,19 +26,19 @@ export const register = async (req: Request, res: Response): Promise<void> => {
 };
 
 export const login = async (req: Request, res: Response): Promise<void> => {
-  const validation = loginSchema.safeParse(req.body);
+  const validation = validateData(loginSchema, req.body);
   if (!validation.success) {
     res.status(400).json({
-      message: "Dados inválidos!",
-      errors: validation.error.format(),
+      message: validation.error,
+      errors: validation.issues,
     });
     return;
   }
 
-  const { identifier, password } = req.body;
+  const loginData = validation.data;
 
   try {
-    const result = await AuthService.login(identifier, password);
+    const result = await AuthService.login(loginData);
     res.status(200).json({
       message: "Login bem-sucedido!",
       ...result,
