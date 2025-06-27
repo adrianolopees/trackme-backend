@@ -6,13 +6,14 @@ export const getMyProfile = async (
   res: Response
 ): Promise<void> => {
   try {
-    const userId = (req as any).user?.id; // middleware autenticou e colocou user no req
-    if (!userId) {
+    const profileId = (req as any).user?.id; // middleware autenticou e colocou user no req
+
+    if (!profileId) {
       res.status(401).json({ message: "Não autorizado" });
       return;
     }
 
-    const profile = await ProfileService.getProfileById(userId);
+    const profile = await ProfileService.getProfileById(profileId);
     if (!profile) {
       res.status(404).json({ message: "Perfil não encontrado" });
       return;

@@ -1,11 +1,23 @@
 // models/Profile.ts
-import { DataTypes, Model } from "sequelize";
+import { DataTypes, Model, Optional } from "sequelize";
 import sequelize from "../config/database";
+export interface ProfileAttributes {
+  id: number;
+  username: string;
+  email: string;
+  password: string;
+  name: string;
+  bio?: string;
+  avatar?: Buffer;
+  createdAt: Date;
+  updatedAt: Date;
+}
 
-import {
-  ProfileAttributes,
-  ProfileCreationAttributes,
-} from "../interfaces/Profile";
+export interface ProfileCreationAttributes
+  extends Optional<
+    ProfileAttributes,
+    "id" | "bio" | "avatar" | "createdAt" | "updatedAt"
+  > {}
 
 class Profile
   extends Model<ProfileAttributes, ProfileCreationAttributes>
