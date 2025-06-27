@@ -1,19 +1,10 @@
 import { Router } from "express";
-import {
-  getMyProfile,
-  updateProfile,
-  deleteAvatarAndBio,
-} from "../controllers/profileController";
+import { getMyProfile } from "../controllers/profileController";
+import { authMiddleware } from "../middleware/authMiddleware";
 
 const router = Router();
 
 // GET /profile/me
-router.get("/me", getMyProfile);
-
-// PATCH /profile/update
-router.patch("/update", updateProfile);
-
-// DELETE /profile/avatar-bio
-router.delete("/avatar-bio", deleteAvatarAndBio);
+router.get("/me", authMiddleware, getMyProfile);
 
 export default router;

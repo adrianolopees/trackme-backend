@@ -1,41 +1,38 @@
-import { Request, Response, NextFunction } from "express";
-import jwt, { JwtPayload } from "jsonwebtoken";
+import { Request, Response, NextFunction, RequestHandler } from "express";
+import jwt from "jsonwebtoken";
 import { JWT_SECRET } from "../config/jwtConfig";
 
-interface CustomRequest extends Request {
-  user?: string | JwtPayload; // pode ser o payload decodificado do token
+interface JwtPayload {
+  id: number;
+  iat: number;
+  exp: number;
 }
 
-const authenticateToken = (
-  req: CustomRequest,
-  res: Response,
-  next: NextFunction
-): void => {
+// Extendendo o Request para adicionar user
+declare module "express-serve-static-core" {
+  interface Request {
+    user?: { id: number };
+  }
+}
+
+export const authMiddleware: RequestHandler = (req, res, next) => {
   const authHeader = req.headers.authorization;
 
-  // token deve vir no formato: "Bearer <token>"
-  const token = authHeader && authHeader.split(" ")[1];
-
-  if (!token) {
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
     res.status(401).json({ message: "Token não fornecido" });
     return;
   }
 
-  if (!JWT_SECRET) {
-    res
-      .status(500)
-      .json({ message: "JWT_SECRET não está definido no ambiente" });
-    return;
-  }
+  const token = authHeader.split(" ")[1];
 
   try {
-    const decoded = jwt.verify(token, JWT_SECRET);
-    req.user = decoded; // armazena os dados do token na req
-    next(); // segue a proxima etapa (rota protegida)
+    const decoded = jwt.verify(token, JWT_SECRET!) as JwtPayload;
+
+    req.user = { id: decoded.id };
+
+    next();
   } catch (error) {
-    res.status(403).json({ message: "Token inválido ou expirado!" });
+    res.status(401).json({ message: "Token inválido ou expirado" });
     return;
   }
 };
-
-export default authenticateToken;
