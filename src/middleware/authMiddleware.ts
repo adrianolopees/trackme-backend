@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction, RequestHandler } from "express";
+import { RequestHandler } from "express";
 import jwt from "jsonwebtoken";
 import { JWT_SECRET } from "../config/jwtConfig";
 
@@ -6,13 +6,6 @@ interface JwtPayload {
   id: number;
   iat: number;
   exp: number;
-}
-
-// Extendendo o Request para adicionar user
-declare module "express-serve-static-core" {
-  interface Request {
-    user?: { id: number };
-  }
 }
 
 export const authMiddleware: RequestHandler = (req, res, next) => {
@@ -28,7 +21,7 @@ export const authMiddleware: RequestHandler = (req, res, next) => {
   try {
     const decoded = jwt.verify(token, JWT_SECRET!) as JwtPayload;
 
-    req.user = { id: decoded.id };
+    req.profile = { id: decoded.id };
 
     next();
   } catch (error) {

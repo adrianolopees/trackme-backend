@@ -6,7 +6,7 @@ export const getMyProfile = async (
   res: Response
 ): Promise<void> => {
   try {
-    const profileId = (req as any).user?.id; // middleware autenticou e colocou user no req
+    const profileId = req.profile?.id; // middleware autenticou e colocou profile no req
 
     if (!profileId) {
       res.status(401).json({ message: "Não autorizado" });
