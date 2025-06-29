@@ -66,6 +66,7 @@ export const getProfileSchema = z.object({
     .int("ID deve ser um número inteiro")
     .positive("ID deve ser um número positivo"),
 });
+
 export const profileUpdateSchema = z.object({
   bio: z
     .string({
@@ -74,6 +75,18 @@ export const profileUpdateSchema = z.object({
     .max(160, "Bio deve ter no máximo 160 caracteres")
     .optional(),
   avatar: z.instanceof(Buffer).optional(),
+});
+
+// schema para validar resposta (se necessário)
+export const safeProfileResponseSchema = z.object({
+  id: z.number(),
+  username: z.string(),
+  email: z.string().email(),
+  name: z.string(),
+  bio: z.string().optional(),
+  avatar: z.instanceof(Buffer).optional(),
+  createdAt: z.date(),
+  updatedAt: z.date(),
 });
 
 export type RegisterData = z.infer<typeof registerSchema>;

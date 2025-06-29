@@ -1,55 +1,40 @@
-import { Request, Response } from "express";
+// controllers/profileController.ts
 import { ProfileService } from "../services/profileService";
+import { ProfileUpdateData } from "../validators/profileValidator";
 
-export const getMyProfile = async (
-  req: Request,
-  res: Response
-): Promise<void> => {
-  try {
-    const profileId = req.profile?.id; // middleware autenticou e colocou profile no req
+export class ProfileController {
+  constructor(private profileService: ProfileService) {}
 
-    if (!profileId) {
-      res.status(401).json({ message: "Não autorizado" });
-      return;
+  /**
+   * Busca perfil do usuário autenticado
+   * @param profileId - ID do perfil extraído do token JWT
+   * @returns Promise<Profile> - Perfil sem senha
+   */
+  async getMyProfile(profileId: number) {
+    const profile = await this.profileService.getProfileById(profileId);
+
+    if (!profile) {
+      throw new Error("Perfil não encontrado");
     }
 
-    const safeProfile = await ProfileService.getProfileById(profileId);
-    if (!safeProfile) {
-      res.status(404).json({ message: "Perfil não encontrado" });
-      return;
-    }
-    // Removendo a senha do perfil antes de enviar a resposta
-    // Retornando sem senha
-
-    res.status(200).json(safeProfile);
-    return;
-  } catch (error) {
-    console.error("Erro ao buscar perfil:", error);
-    res.status(500).json({ message: "Erro interno do servidor" });
-    return;
+    return profile;
   }
-};
 
-export const updateMyProfile = async (
-  req: Request,
-  res: Response
-): Promise<void> => {
-  try {
-    const profileId = req.profile?.id; // middleware autenticou e colocou profile no req
-
-    if (!profileId) {
-      res.status(401).json({ message: "Não autorizado" });
-      return;
-    }
-
-    const updatedProfile = await ProfileService.updateProfile(
+  /**
+   * Atualiza perfil do usuário autenticado
+   * @param profileId - ID do perfil extraído do token JWT
+   * @param updateData - Dados validados para atualização
+   * @returns Promise<Profile> - Perfil atualizado sem senha
+   */
+  async updateMyProfile(profileId: number, updateData: ProfileUpdateData) {
+    const updatedProfile = await this.profileService.updateProfile(
       profileId,
-      req.body
+      updateData
     );
 
-    res.status(200).json(updatedProfile);
-  } catch (error) {
-    console.error("Erro ao atualizar perfil:", error);
-    res.status(500).json({ message: "Erro interno do servidor" });
+    return updatedProfile;
   }
-};
+}
+
+// Instância única para uso nas rotas
+export const profileController = new ProfileController(new ProfileService());

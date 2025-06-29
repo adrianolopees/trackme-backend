@@ -1,37 +1,52 @@
+// services/profileService.ts
 import { Profile } from "../models/Profile";
-import { validateData } from "../utils/validateData";
-import {
-  profileUpdateSchema,
-  ProfileUpdateData,
-} from "../validators/profileValidator";
+import { ProfileUpdateData } from "../validators/profileValidator";
 
 export class ProfileService {
-  static async getProfileById(id: number) {
+  /**
+   * Busca perfil por ID
+   * @param id - ID do perfil
+   * @returns Promise<Profile | null> - Perfil sem senha ou null se não encontrado
+   */
+  async getProfileById(id: number) {
     const profile = await Profile.findByPk(id);
 
-    if (!profile) throw new Error("Perfil não encontrado");
+    if (!profile) {
+      return null; // Retorna null ao invés de throw - deixa controller decidir
+    }
 
     const { password, ...safeProfile } = profile.toJSON();
     return safeProfile;
   }
 
-  static async updateProfile(id: number, data: ProfileUpdateData) {
-    const validationResult = validateData(profileUpdateSchema, data);
-    if (!validationResult.success) {
-      throw new Error(
-        `Erro de validação: ${validationResult.error} - ${JSON.stringify(
-          validationResult.issues
-        )}`
-      );
-    }
-    const validatedData = validationResult.data;
-
+  /**
+   * Atualiza perfil
+   * @param id - ID do perfil
+   * @param data - Dados já validados para atualização
+   * @returns Promise<Profile> - Perfil atualizado sem senha
+   */
+  async updateProfile(id: number, data: ProfileUpdateData) {
     const profile = await Profile.findByPk(id);
-    if (!profile) throw new Error("Perfil não encontrado");
 
-    const update = await profile.update(validatedData);
+    if (!profile) {
+      throw new Error("Perfil não encontrado");
+    }
 
-    const { password, ...safeProfile } = update.toJSON();
+    const updatedProfile = await profile.update(data);
+    const { password, ...safeProfile } = updatedProfile.toJSON();
+
     return safeProfile;
+  }
+
+  /**
+   * Verifica se perfil existe
+   * @param id - ID do perfil
+   * @returns Promise<boolean>
+   */
+  async profileExists(id: number): Promise<boolean> {
+    const profile = await Profile.findByPk(id, {
+      attributes: ["id"], // Só busca ID para performance
+    });
+    return !!profile;
   }
 }
