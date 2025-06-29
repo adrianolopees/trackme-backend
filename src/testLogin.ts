@@ -11,7 +11,7 @@ async function testLogin() {
 
     // 1. Dados válidos de login (use os mesmos do perfil criado antes!)
     const loginInput = {
-      identifier: "teste1751047892403@email.com", // ✅ email ou username que já existe no banco
+      identifier: "teste1751219292461@email.com", // ✅ email ou username que já existe no banco
       password: "123456", // ✅ senha correta do perfil
     };
 

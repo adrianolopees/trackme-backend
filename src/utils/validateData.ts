@@ -1,4 +1,3 @@
-// utils/validateData.ts
 import { ZodSchema } from "zod";
 
 export const validateData = <T>(
