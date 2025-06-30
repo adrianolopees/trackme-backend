@@ -7,19 +7,19 @@ import { LoginData, RegisterData } from "../validators/profileValidator";
 import { AuthResponse, SafeProfile } from "../types/profile";
 
 export class AuthService {
-  static async hashPassword(password: string): Promise<string> {
+  private async hashPassword(password: string): Promise<string> {
     const saltRounds = 12;
     return bcrypt.hash(password, saltRounds);
   }
 
-  static async comparePassword(
+  private async comparePassword(
     password: string,
     hash: string
   ): Promise<boolean> {
     return bcrypt.compare(password, hash);
   }
 
-  static generateToken(payload: {
+  private generateToken(payload: {
     id: number;
     username: string;
     email: string;
@@ -31,13 +31,17 @@ export class AuthService {
     return jwt.sign(payload, JWT_SECRET, { expiresIn: "24h" });
   }
 
-  static isEmail(identifier: string): boolean {
+  private isEmail(identifier: string): boolean {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(identifier);
   }
 
-  // Lógica de registro de usuário
-  static async register(data: RegisterData): Promise<SafeProfile> {
+  /**
+   * Registra um novo usuário
+   * @param data - Dados validados para registro
+   * @returns Promise<SafeProfile> - Perfil criado sem senha
+   */
+  async register(data: RegisterData): Promise<SafeProfile> {
     const existingProfile = await Profile.findOne({
       where: {
         [Op.or]: [{ username: data.username }, { email: data.email }],
@@ -71,29 +75,32 @@ export class AuthService {
     };
   }
 
-  //  Lógica de login de usuário
-  static async login({
-    identifier,
-    password,
-  }: LoginData): Promise<AuthResponse> {
-    const isEmail = AuthService.isEmail(identifier);
+  /**
+   * Realiza login do usuário
+   * @param loginData - Dados validados para login
+   * @returns Promise<AuthResponse> - Token e perfil do usuário
+   */
+  async login({ identifier, password }: LoginData): Promise<AuthResponse> {
+    const isEmail = this.isEmail(identifier);
 
     const profile = await Profile.findOne({
       where: isEmail ? { email: identifier } : { username: identifier },
     });
+
     if (!profile) {
       throw new Error("Credenciais inválidas!");
     }
 
-    const isPasswordValid = await AuthService.comparePassword(
+    const isPasswordValid = await this.comparePassword(
       password,
       profile.password
     );
+
     if (!isPasswordValid) {
       throw new Error("Credenciais inválidas!");
     }
 
-    const token = AuthService.generateToken({
+    const token = this.generateToken({
       id: profile.id,
       username: profile.username,
       email: profile.email,

@@ -14,11 +14,10 @@ app.use(
 );
 
 // Middleware para parsing JSON
-app.use(express.json({ limit: "10mb" }));
-app.use(express.urlencoded({ extended: true, limit: "10mb" }));
+app.use(express.json());
 
-app.use("/api/auth", authRoutes);
-app.use("/api/profile", profileRoutes);
+app.use("/api/auth", authRoutes); // Rotas de autenticação
+app.use("/api/profile", profileRoutes); // Rotas de perfil
 
 // Error handler
 app.use(

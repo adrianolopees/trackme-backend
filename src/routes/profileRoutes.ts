@@ -1,18 +1,19 @@
-// routes/profileRoutes.ts
-import { Router } from "express";
-import { ProfileHandler } from "../handlers/profileHandler";
+// routes/profileRouter.ts
+import express from "express";
 import { profileController } from "../controllers/profileController";
-import { authMiddleware } from "../middleware/authMiddleware";
+import { ProfileHandler } from "../handlers/profileHandler";
+import { authMiddleware } from "../middleware/authMiddleware"; // Assumindo que você tem esse middleware
 
-// Instância do handler
+const router = express.Router();
+
+// Instância do ProfileHandler com o ProfileController
 const profileHandler = new ProfileHandler(profileController);
 
-const router = Router();
+// Todas as rotas de perfil precisam de autenticação
+router.use(authMiddleware);
 
-// GET /profile/me - Buscar meu perfil
-router.get("/me", authMiddleware, profileHandler.getMyProfile);
-
-// PATCH /profile/me - Atualizar meu perfil
-router.patch("/me", authMiddleware, profileHandler.updateMyProfile);
+// Rotas de perfil
+router.get("/me", profileHandler.getMyProfile); // GET /profile/me
+router.patch("/me", profileHandler.updateMyProfile); // PATCH/profile/me
 
 export default router;
