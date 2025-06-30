@@ -5,6 +5,7 @@ import { AuthService } from "../services/authService";
 
 export const register = async (req: Request, res: Response): Promise<void> => {
   const validation = validateData(registerSchema, req.body);
+
   if (!validation.success) {
     res.status(400).json({
       message: validation.error,
@@ -13,8 +14,10 @@ export const register = async (req: Request, res: Response): Promise<void> => {
     return;
   }
   const validData = validation.data;
+
   try {
     const user = await AuthService.register(validData);
+
     res.status(201).json({
       message: "Usuário registrado com sucesso!",
       user,

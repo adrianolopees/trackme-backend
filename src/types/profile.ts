@@ -13,6 +13,15 @@ export const SafeProfileSchema = z.object({
   updatedAt: z.date(),
 });
 
+// Schema para retorno do login
+export const AuthResponseSchema = z.object({
+  token: z.string({
+    required_error: "Token é obrigatório",
+    invalid_type_error: "Token deve ser uma string",
+  }),
+  profile: SafeProfileSchema,
+});
+
 // Schema para resposta de API
 export const ApiResponseSchema = z.object({
   success: z.boolean(),
@@ -23,6 +32,7 @@ export const ApiResponseSchema = z.object({
 
 // Types inferidos
 export type SafeProfile = z.infer<typeof SafeProfileSchema>;
+export type AuthResponse = z.infer<typeof AuthResponseSchema>;
 export type ApiResponse<T = any> = {
   success: boolean;
   message: string;

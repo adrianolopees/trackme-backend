@@ -77,18 +77,6 @@ export const profileUpdateSchema = z.object({
   avatar: z.instanceof(Buffer).optional(),
 });
 
-// schema para validar resposta (se necessário)
-export const safeProfileResponseSchema = z.object({
-  id: z.number(),
-  username: z.string(),
-  email: z.string().email(),
-  name: z.string(),
-  bio: z.string().optional(),
-  avatar: z.instanceof(Buffer).optional(),
-  createdAt: z.date(),
-  updatedAt: z.date(),
-});
-
 export type RegisterData = z.infer<typeof registerSchema>;
 export type LoginData = z.infer<typeof loginSchema>;
 export type ProfileUpdateData = z.infer<typeof profileUpdateSchema>;

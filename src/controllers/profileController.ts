@@ -1,5 +1,6 @@
 // controllers/profileController.ts
 import { ProfileService } from "../services/profileService";
+import { SafeProfile } from "../types/profile";
 import { ProfileUpdateData } from "../validators/profileValidator";
 
 export class ProfileController {
@@ -10,7 +11,7 @@ export class ProfileController {
    * @param profileId - ID do perfil extraído do token JWT
    * @returns Promise<Profile> - Perfil sem senha
    */
-  async getMyProfile(profileId: number) {
+  async getMyProfile(profileId: number): Promise<SafeProfile> {
     const profile = await this.profileService.getProfileById(profileId);
 
     if (!profile) {
@@ -26,7 +27,10 @@ export class ProfileController {
    * @param updateData - Dados validados para atualização
    * @returns Promise<Profile> - Perfil atualizado sem senha
    */
-  async updateMyProfile(profileId: number, updateData: ProfileUpdateData) {
+  async updateMyProfile(
+    profileId: number,
+    updateData: ProfileUpdateData
+  ): Promise<SafeProfile> {
     const updatedProfile = await this.profileService.updateProfile(
       profileId,
       updateData

@@ -4,6 +4,7 @@ import { Op } from "sequelize";
 import { Profile } from "../models/Profile";
 import { JWT_SECRET } from "../config/jwtConfig";
 import { LoginData, RegisterData } from "../validators/profileValidator";
+import { AuthResponse, SafeProfile } from "../types/profile";
 
 export class AuthService {
   static async hashPassword(password: string): Promise<string> {
@@ -36,7 +37,7 @@ export class AuthService {
   }
 
   // Lógica de registro de usuário
-  static async register(data: RegisterData) {
+  static async register(data: RegisterData): Promise<SafeProfile> {
     const existingProfile = await Profile.findOne({
       where: {
         [Op.or]: [{ username: data.username }, { email: data.email }],
@@ -65,11 +66,16 @@ export class AuthService {
       name: newProfile.name,
       bio: newProfile.bio,
       avatar: newProfile.avatar,
+      createdAt: newProfile.createdAt,
+      updatedAt: newProfile.updatedAt,
     };
   }
 
   //  Lógica de login de usuário
-  static async login({ identifier, password }: LoginData) {
+  static async login({
+    identifier,
+    password,
+  }: LoginData): Promise<AuthResponse> {
     const isEmail = AuthService.isEmail(identifier);
 
     const profile = await Profile.findOne({
@@ -99,6 +105,11 @@ export class AuthService {
         id: profile.id,
         email: profile.email,
         username: profile.username,
+        name: profile.name,
+        bio: profile.bio,
+        avatar: profile.avatar,
+        createdAt: profile.createdAt,
+        updatedAt: profile.updatedAt,
       },
     };
   }
