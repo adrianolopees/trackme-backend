@@ -2,7 +2,6 @@ import { Request, Response, NextFunction } from "express";
 import { AuthController } from "../controllers/authController";
 import { validateData } from "../utils/validateData";
 import { registerSchema, loginSchema } from "../validators/profileValidator";
-import { success } from "zod/v4";
 
 export class AuthHandler {
   constructor(private authController: AuthController) {}

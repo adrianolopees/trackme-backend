@@ -1,4 +1,3 @@
-// routes/profileRouter.ts
 import express from "express";
 import { profileController } from "../controllers/profileController";
 import { ProfileHandler } from "../handlers/profileHandler";

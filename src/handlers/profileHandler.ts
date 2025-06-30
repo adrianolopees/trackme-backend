@@ -1,4 +1,3 @@
-// handlers/profileHandler.ts
 import { Request, Response, NextFunction } from "express";
 import { ProfileController } from "../controllers/profileController";
 import { validateData } from "../utils/validateData";
