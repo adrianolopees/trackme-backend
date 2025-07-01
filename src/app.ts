@@ -8,7 +8,9 @@ const app = express();
 // Middleware de CORS
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL || "http://localhost:3333",
+    origin: process.env.FRONTEND_URL || "http://localhost:5173", // URL do frontend
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // Métodos permitidos
+    allowedHeaders: ["Content-Type", "Authorization"], // Cabeçalhos permitidos
     credentials: true,
   })
 );
