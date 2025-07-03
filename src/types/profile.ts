@@ -9,8 +9,6 @@ export const SafeProfileSchema = z.object({
   name: z.string(),
   bio: z.string().optional(),
   avatar: z.instanceof(Buffer).optional(),
-  createdAt: z.date(),
-  updatedAt: z.date(),
 });
 
 // Schema para retorno do login

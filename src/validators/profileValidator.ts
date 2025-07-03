@@ -28,17 +28,6 @@ export const registerSchema = z.object({
       invalid_type_error: "Nome deve ser um texto",
     })
     .min(2, "Nome deve ter pelo menos 2 caracteres"),
-
-  bio: z.string().optional(),
-
-  avatar: z
-    .instanceof(Buffer, {
-      message: "Avatar deve ser um arquivo de imagem",
-    })
-    .optional(),
-
-  createdAt: z.date().optional(),
-  updatedAt: z.date().optional(),
 });
 
 export const loginSchema = z.object({

@@ -58,8 +58,6 @@ export class AuthService {
       username: data.username,
       email: data.email,
       name: data.name ?? undefined,
-      bio: data.bio ?? undefined,
-      avatar: data.avatar ?? undefined,
       password: hashedPassword,
     });
 
@@ -68,10 +66,6 @@ export class AuthService {
       username: newProfile.username,
       email: newProfile.email,
       name: newProfile.name,
-      bio: newProfile.bio,
-      avatar: newProfile.avatar,
-      createdAt: newProfile.createdAt,
-      updatedAt: newProfile.updatedAt,
     };
   }
 
@@ -115,8 +109,6 @@ export class AuthService {
         name: profile.name,
         bio: profile.bio,
         avatar: profile.avatar,
-        createdAt: profile.createdAt,
-        updatedAt: profile.updatedAt,
       },
     };
   }
