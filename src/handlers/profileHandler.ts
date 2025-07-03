@@ -48,7 +48,6 @@ export class ProfileHandler {
   ): Promise<void> => {
     try {
       const profileId = req.profile?.id;
-
       if (!profileId) {
         res.status(401).json({
           success: false,
@@ -56,9 +55,15 @@ export class ProfileHandler {
         });
         return;
       }
+      const { bio } = req.body;
+      const avatar = req.file?.buffer;
 
       // Validação dos dados de entrada
-      const validationResult = validateData(profileUpdateSchema, req.body);
+      const validationResult = validateData(profileUpdateSchema, {
+        ...req.body,
+        avatar,
+        bio,
+      });
 
       if (!validationResult.success) {
         res.status(400).json({
