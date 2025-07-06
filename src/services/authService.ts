@@ -39,9 +39,9 @@ export class AuthService {
   /**
    * Registra um novo usuário
    * @param data - Dados validados para registro
-   * @returns Promise<SafeProfile> - Perfil criado sem senha
+   * @returns Promise<AuthResponse> - Perfil criado sem senha e autenticação
    */
-  async register(data: RegisterData): Promise<SafeProfile> {
+  async register(data: RegisterData): Promise<AuthResponse> {
     const existingProfile = await Profile.findOne({
       where: {
         [Op.or]: [{ username: data.username }, { email: data.email }],
@@ -53,19 +53,26 @@ export class AuthService {
     }
 
     const hashedPassword = await this.hashPassword(data.password);
-
     const newProfile = await Profile.create({
       username: data.username,
       email: data.email,
       name: data.name ?? undefined,
       password: hashedPassword,
     });
-
-    return {
+    const token = this.generateToken({
       id: newProfile.id,
       username: newProfile.username,
       email: newProfile.email,
-      name: newProfile.name,
+    });
+
+    return {
+      token,
+      profile: {
+        id: newProfile.id,
+        username: newProfile.username,
+        email: newProfile.email,
+        name: newProfile.name,
+      },
     };
   }
 
