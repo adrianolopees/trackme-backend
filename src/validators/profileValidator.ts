@@ -64,13 +64,6 @@ export const profileUpdateSchema = z.object({
     .max(160, "Bio deve ter no máximo 160 caracteres")
     .optional(),
   avatar: z.instanceof(Buffer).optional(),
-  name: z
-    .string({
-      invalid_type_error: "Nome deve ser um texto",
-    })
-    .min(2, "Nome deve ter pelo menos 2 caracteres")
-    .max(50, "Nome deve ter no máximo 50 caracteres")
-    .optional(),
 });
 
 export type RegisterData = z.infer<typeof registerSchema>;
