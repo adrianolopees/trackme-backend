@@ -56,14 +56,10 @@ export class ProfileHandler {
         return;
       }
       const { bio } = req.body;
-      const avatar = req.file?.buffer;
+      const avatarBuffer = req.file?.buffer;
 
       // Validação dos dados de entrada
-      const validationResult = validateData(profileUpdateSchema, {
-        ...req.body,
-        avatar,
-        bio,
-      });
+      const validationResult = validateData(profileUpdateSchema, { bio });
 
       if (!validationResult.success) {
         res.status(400).json({
@@ -74,11 +70,15 @@ export class ProfileHandler {
         return;
       }
 
+      const payload = {
+        ...validationResult.data,
+        ...(avatarBuffer ? { avatar: avatarBuffer } : {}),
+      };
+
       const updatedProfile = await this.profileController.updateMyProfile(
         profileId,
-        validationResult.data
+        payload
       );
-
       res.status(200).json({
         success: true,
         data: updatedProfile,
