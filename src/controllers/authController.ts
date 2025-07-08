@@ -10,7 +10,7 @@ export class AuthController {
    * @param registerData - Dados de registro validados
    * @returns Promise<SafeProfile> - Perfil do usuário registrado sem senha
    */
-  async register(registerData: RegisterData): Promise<SafeProfile> {
+  async register(registerData: RegisterData): Promise<AuthResponse> {
     const profile = await this.authService.register(registerData);
     return profile;
   }
