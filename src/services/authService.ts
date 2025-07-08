@@ -4,7 +4,7 @@ import { Op } from "sequelize";
 import { Profile } from "../models/Profile";
 import { JWT_SECRET } from "../config/jwtConfig";
 import { LoginData, RegisterData } from "../validators/profileValidator";
-import { AuthResponse, SafeProfile } from "../types/profile";
+import { AuthResponse } from "../types/profile";
 
 export class AuthService {
   private async hashPassword(password: string): Promise<string> {
@@ -105,6 +105,17 @@ export class AuthService {
       id: profile.id,
       username: profile.username,
       email: profile.email,
+    });
+    // 👉 Debug aqui
+    console.log("🧪 Login bem-sucedido!");
+    console.log("🔐 Token gerado:", token);
+    console.log("👤 Profile retornado:", {
+      id: profile.id,
+      email: profile.email,
+      username: profile.username,
+      name: profile.name,
+      bio: profile.bio,
+      avatar: profile.avatar,
     });
 
     return {
