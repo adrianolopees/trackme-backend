@@ -1,6 +1,6 @@
 import { AuthService } from "../services/authService";
 import { RegisterData, LoginData } from "../validators/profileValidator";
-import { SafeProfile, AuthResponse } from "../types/profile";
+import { AuthResponse } from "../types/profile";
 
 export class AuthController {
   constructor(private authService: AuthService) {}
