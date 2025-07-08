@@ -106,17 +106,6 @@ export class AuthService {
       username: profile.username,
       email: profile.email,
     });
-    // 👉 Debug aqui
-    console.log("🧪 Login bem-sucedido!");
-    console.log("🔐 Token gerado:", token);
-    console.log("👤 Profile retornado:", {
-      id: profile.id,
-      email: profile.email,
-      username: profile.username,
-      name: profile.name,
-      bio: profile.bio,
-      avatar: profile.avatar,
-    });
 
     return {
       token,

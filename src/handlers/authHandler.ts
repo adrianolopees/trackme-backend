@@ -71,11 +71,11 @@ export class AuthHandler {
         return;
       }
 
-      const profileAndToken = await this.authController.login(validation.data);
+      const profile = await this.authController.login(validation.data);
 
       res.status(200).json({
         success: true,
-        data: profileAndToken,
+        data: profile,
         message: "Login realizado com sucesso!",
       });
     } catch (error) {
