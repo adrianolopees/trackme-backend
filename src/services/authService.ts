@@ -4,7 +4,7 @@ import { Op } from "sequelize";
 import { Profile } from "../models/Profile";
 import { JWT_SECRET } from "../config/jwtConfig";
 import { LoginData, RegisterData } from "../validators/profileValidator";
-import { AuthResponse } from "../types/profile";
+import { AuthResponse, TokenResponse } from "../types/profile";
 
 export class AuthService {
   private async hashPassword(password: string): Promise<string> {
@@ -79,9 +79,9 @@ export class AuthService {
   /**
    * Realiza login do usuário
    * @param loginData - Dados validados para login
-   * @returns Promise<AuthResponse> - Token e perfil do usuário
+   * @returns Promise<AuthResponse> - Token
    */
-  async login({ identifier, password }: LoginData): Promise<AuthResponse> {
+  async login({ identifier, password }: LoginData): Promise<TokenResponse> {
     const isEmail = this.isEmail(identifier);
 
     const profile = await Profile.findOne({
@@ -109,14 +109,6 @@ export class AuthService {
 
     return {
       token,
-      profile: {
-        id: profile.id,
-        email: profile.email,
-        username: profile.username,
-        name: profile.name,
-        bio: profile.bio,
-        avatar: profile.avatar,
-      },
     };
   }
 }

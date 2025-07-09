@@ -47,13 +47,12 @@ export const loginSchema = z.object({
 });
 
 export const getProfileSchema = z.object({
-  id: z
-    .number({
-      required_error: "ID é obrigatório",
-      invalid_type_error: "ID deve ser um número",
-    })
-    .int("ID deve ser um número inteiro")
-    .positive("ID deve ser um número positivo"),
+  id: z.number(),
+  username: z.string(),
+  email: z.string().email(),
+  name: z.string(),
+  bio: z.string().optional(),
+  avatar: z.instanceof(Buffer).optional(),
 });
 
 export const profileUpdateSchema = z.object({
@@ -69,3 +68,4 @@ export const profileUpdateSchema = z.object({
 export type RegisterData = z.infer<typeof registerSchema>;
 export type LoginData = z.infer<typeof loginSchema>;
 export type ProfileUpdateData = z.infer<typeof profileUpdateSchema>;
+export type GetProfileData = z.infer<typeof getProfileSchema>;

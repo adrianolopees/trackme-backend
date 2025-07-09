@@ -1,6 +1,6 @@
 import { AuthService } from "../services/authService";
 import { RegisterData, LoginData } from "../validators/profileValidator";
-import { AuthResponse } from "../types/profile";
+import { AuthResponse, TokenResponse } from "../types/profile";
 
 export class AuthController {
   constructor(private authService: AuthService) {}
@@ -20,7 +20,7 @@ export class AuthController {
    * @param loginData - Dados de login validados
    * @returns Promise<AuthResponse> - Resposta de autenticação com token e perfil
    */
-  async login(loginData: LoginData): Promise<AuthResponse> {
+  async login(loginData: LoginData): Promise<TokenResponse> {
     const result = await this.authService.login(loginData);
     return result;
   }
