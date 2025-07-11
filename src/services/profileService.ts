@@ -15,7 +15,7 @@ export class ProfileService {
       return null; // Retorna null ao invés de throw - deixa controller decidir
     }
 
-    const { password, ...safeProfile } = profile.toJSON();
+    const { password, ...safeProfile } = profile.get();
     return safeProfile;
   }
 

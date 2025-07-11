@@ -70,6 +70,12 @@ Profile.init(
     avatar: {
       type: DataTypes.BLOB,
       allowNull: true,
+      get() {
+        const rawData = this.getDataValue("avatar");
+        if (!rawData) return null;
+
+        return `data:image/png;base64,${rawData.toString("base64")}`;
+      },
     },
     createdAt: {
       type: DataTypes.DATE,
