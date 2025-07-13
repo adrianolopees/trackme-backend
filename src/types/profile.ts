@@ -8,7 +8,13 @@ export const SafeProfileSchema = z.object({
   email: z.string().email(),
   name: z.string(),
   bio: z.string().optional(),
-  avatar: z.instanceof(Buffer).optional(),
+  avatar: z
+    .string()
+    .regex(
+      /^data:image\/[a-z]+;base64,/,
+      "Avatar deve estar em formato base64 válido"
+    )
+    .optional(),
 });
 
 // Schema para retorno do login
