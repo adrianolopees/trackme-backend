@@ -5,7 +5,6 @@ import { JwtPayload } from "../types/jwt";
 
 export const authMiddleware: RequestHandler = (req, res, next) => {
   const authHeader = req.headers.authorization;
-
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
     res.status(401).json({ message: "Token não fornecido" });
     return;
@@ -15,7 +14,6 @@ export const authMiddleware: RequestHandler = (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, JWT_SECRET!) as JwtPayload;
-
     req.profile = { id: decoded.id };
 
     next();

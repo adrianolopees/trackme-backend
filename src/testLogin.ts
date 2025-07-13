@@ -1,4 +1,3 @@
-// test-login.ts
 import sequelize from "./config/database";
 import { validateData } from "./utils/validateData";
 import { loginSchema, LoginData } from "./validators/profileValidator";

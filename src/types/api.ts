@@ -1,4 +1,3 @@
-// types/api.ts - Types gerais de API
 export type ApiResponse<T = any> = {
   success: boolean;
   message: string;

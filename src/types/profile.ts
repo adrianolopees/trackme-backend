@@ -1,4 +1,3 @@
-// types/profile.ts
 import { z } from "zod";
 
 // Schema para o perfil retornado (sem senha)
