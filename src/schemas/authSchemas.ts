@@ -1,6 +1,7 @@
 import { z } from "zod";
+import { SafeProfileSchema } from "./profileSchemas";
 
-export const registerSchema = z.object({
+export const RegisterSchema = z.object({
   username: z
     .string({
       required_error: "Username é obrigatório",
@@ -30,7 +31,7 @@ export const registerSchema = z.object({
     .min(2, "Nome deve ter pelo menos 2 caracteres"),
 });
 
-export const loginSchema = z.object({
+export const LoginSchema = z.object({
   identifier: z
     .string({
       required_error: "Identificador é obrigatório",
@@ -46,26 +47,22 @@ export const loginSchema = z.object({
     .min(6),
 });
 
-export const getProfileSchema = z.object({
-  id: z.number(),
-  username: z.string(),
-  email: z.string().email(),
-  name: z.string(),
-  bio: z.string().optional(),
-  avatar: z.instanceof(Buffer).optional(),
+export const AuthResponseSchema = z.object({
+  token: z.string({
+    required_error: "Token é obrigatório",
+    invalid_type_error: "Token deve ser uma string",
+  }),
+  profile: SafeProfileSchema,
 });
 
-export const profileUpdateSchema = z.object({
-  bio: z
-    .string({
-      invalid_type_error: "Bio deve ser um texto",
-    })
-    .max(160, "Bio deve ter no máximo 160 caracteres")
-    .optional(),
-  avatar: z.instanceof(Buffer).optional(),
+export const TokenResponseSchema = z.object({
+  token: z.string({
+    required_error: "Token é obrigatório",
+    invalid_type_error: "Token deve ser uma string",
+  }),
 });
 
-export type RegisterData = z.infer<typeof registerSchema>;
-export type LoginData = z.infer<typeof loginSchema>;
-export type ProfileUpdateData = z.infer<typeof profileUpdateSchema>;
-export type GetProfileData = z.infer<typeof getProfileSchema>;
+export type RegisterData = z.infer<typeof RegisterSchema>;
+export type LoginData = z.infer<typeof LoginSchema>;
+export type AuthResponse = z.infer<typeof AuthResponseSchema>;
+export type TokenResponse = z.infer<typeof TokenResponseSchema>;

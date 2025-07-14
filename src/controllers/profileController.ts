@@ -1,44 +1,78 @@
-// controllers/profileController.ts
-import { ProfileService } from "../services/profileService";
-import { SafeProfile } from "../types/profile";
-import { ProfileUpdateData } from "../validators/profileValidator";
+import { Request, Response, NextFunction } from "express";
+import { profileService } from "../services/profileService";
+import { ProfileUpdateSchema } from "../schemas/profileSchemas";
 
-export class ProfileController {
-  constructor(private profileService: ProfileService) {}
+export const profileController = {
+  async getMyProfile(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const profileId = req.profile?.id;
+      if (!profileId) {
+        res.status(401).json({
+          success: false,
 
-  /**
-   * Busca perfil do usuário autenticado
-   * @param profileId - ID do perfil extraído do token JWT
-   * @returns Promise<Profile> - Perfil sem senha
-   */
-  async getMyProfile(profileId: number): Promise<SafeProfile> {
-    const profile = await this.profileService.getProfileById(profileId);
+          message: "Não autorizado",
+        });
+        return;
+      }
 
-    if (!profile) {
-      throw new Error("Perfil não encontrado");
+      const profile = await profileService.getProfile(profileId);
+      res.status(200).json({
+        success: true,
+        data: profile,
+        message: "Perfil recuperado com sucesso",
+      });
+    } catch (error) {
+      next(error);
     }
+  },
 
-    return profile;
-  }
-
-  /**
-   * Atualiza perfil do usuário autenticado
-   * @param profileId - ID do perfil extraído do token JWT
-   * @param updateData - Dados validados para atualização
-   * @returns Promise<Profile> - Perfil atualizado sem senha
-   */
   async updateMyProfile(
-    profileId: number,
-    updateData: ProfileUpdateData
-  ): Promise<SafeProfile> {
-    const updatedProfile = await this.profileService.updateProfile(
-      profileId,
-      updateData
-    );
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const profileId = req.profile?.id;
+      if (!profileId) {
+        res.status(401).json({ success: false, message: "Não autorizado" });
+        return;
+      }
 
-    return updatedProfile;
-  }
-}
+      const avatarBuffer = req.file?.buffer;
+      const { bio } = req.body;
 
-// Instância única para uso nas rotas
-export const profileController = new ProfileController(new ProfileService());
+      // Validação com Zod
+      const result = ProfileUpdateSchema.safeParse({ bio });
+      if (!result.success) {
+        res.status(400).json({
+          success: false,
+          message: "Dados inválidos",
+          errors: result.error.format(),
+        });
+        return;
+      }
+
+      const updateData = {
+        ...result.data,
+        ...(avatarBuffer ? { avatar: avatarBuffer } : {}),
+      };
+
+      const updatedProfile = await profileService.updateProfile(
+        profileId,
+        updateData
+      );
+
+      res.status(200).json({
+        success: true,
+        data: updatedProfile,
+        message: "Perfil atualizado com sucesso",
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+};

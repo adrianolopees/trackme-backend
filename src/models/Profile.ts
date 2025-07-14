@@ -1,4 +1,3 @@
-// models/Profile.ts
 import { DataTypes, Model, Optional } from "sequelize";
 import sequelize from "../config/database";
 export interface ProfileAttributes {
@@ -71,10 +70,8 @@ Profile.init(
       type: DataTypes.BLOB,
       allowNull: true,
       get() {
-        const rawData = this.getDataValue("avatar");
-        if (!rawData) return null;
-
-        return `data:image/png;base64,${rawData.toString("base64")}`;
+        const raw = this.getDataValue("avatar");
+        return raw ? raw.toString("base64") : null;
       },
     },
     createdAt: {

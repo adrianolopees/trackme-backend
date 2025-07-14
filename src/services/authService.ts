@@ -3,8 +3,8 @@ import jwt from "jsonwebtoken";
 import { Op } from "sequelize";
 import { Profile } from "../models/Profile";
 import { JWT_SECRET } from "../config/jwtConfig";
-import { LoginData, RegisterData } from "../validators/profileValidator";
-import { AuthResponse, TokenResponse } from "../types/profile";
+import { LoginData, RegisterData } from "../schemas/authSchemas";
+import { AuthResponse, TokenResponse } from "../schemas/authSchemas";
 
 export class AuthService {
   private async hashPassword(password: string): Promise<string> {

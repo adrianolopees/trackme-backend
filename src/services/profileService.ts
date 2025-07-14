@@ -1,52 +1,26 @@
-// services/profileService.ts
-import { Profile } from "../models/Profile";
-import { ProfileUpdateData } from "../validators/profileValidator";
+import { ProfileUpdateData, SafeProfile } from "../schemas/profileSchemas";
+import { profileRepository } from "../repositories/profileRepository";
+import { toSafeProfile } from "../utils/toSafeProfile";
 
-export class ProfileService {
-  /**
-   * Busca perfil por ID
-   * @param id - ID do perfil
-   * @returns Promise<Profile | null> - Perfil sem senha ou null se não encontrado
-   */
-  async getProfileById(id: number) {
-    const profile = await Profile.findByPk(id);
-
-    if (!profile) {
-      return null; // Retorna null ao invés de throw - deixa controller decidir
-    }
-
-    const { password, ...safeProfile } = profile.get();
-    return safeProfile;
-  }
-
-  /**
-   * Atualiza perfil
-   * @param id - ID do perfil
-   * @param data - Dados já validados para atualização
-   * @returns Promise<Profile> - Perfil atualizado sem senha
-   */
-  async updateProfile(id: number, data: ProfileUpdateData) {
-    const profile = await Profile.findByPk(id);
-
+export const profileService = {
+  async getProfile(id: number): Promise<SafeProfile> {
+    const profile = await profileRepository.findById(id);
     if (!profile) {
       throw new Error("Perfil não encontrado");
     }
+    return toSafeProfile(profile);
+  },
 
-    const updatedProfile = await profile.update(data);
-    const { password, ...safeProfile } = updatedProfile.toJSON();
+  async updateProfile(
+    id: number,
+    data: ProfileUpdateData
+  ): Promise<SafeProfile> {
+    await profileRepository.update(id, data);
+    const updatedProfile = await profileRepository.findById(id);
 
-    return safeProfile;
-  }
-
-  /**
-   * Verifica se perfil existe
-   * @param id - ID do perfil
-   * @returns Promise<boolean>
-   */
-  async profileExists(id: number): Promise<boolean> {
-    const profile = await Profile.findByPk(id, {
-      attributes: ["id"], // Só busca ID para performance
-    });
-    return !!profile;
-  }
-}
+    if (!updatedProfile) {
+      throw new Error("Perfil não encontrado após atualização");
+    }
+    return toSafeProfile(updatedProfile);
+  },
+};

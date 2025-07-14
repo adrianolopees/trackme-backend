@@ -9,6 +9,6 @@ const authHandler = new AuthHandler(authController);
 
 // Rotas de autenticação
 router.post("/register", authHandler.register);
-router.post("/login", authHandler.login);
+router.get("/login", authHandler.login);
 
 export default router;

@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { AuthController } from "../controllers/authController";
 import { validateData } from "../utils/validateData";
-import { registerSchema, loginSchema } from "../validators/profileValidator";
+import { RegisterSchema, LoginSchema } from "../schemas/authSchemas";
 
 export class AuthHandler {
   constructor(private authController: AuthController) {}
@@ -16,7 +16,7 @@ export class AuthHandler {
   ): Promise<void> => {
     try {
       // validação dos dados de entrada
-      const validation = validateData(registerSchema, req.body);
+      const validation = validateData(RegisterSchema, req.body);
 
       if (!validation.success) {
         res.status(400).json({
@@ -60,7 +60,7 @@ export class AuthHandler {
   ): Promise<void> => {
     try {
       // Validação dos dados de entrada
-      const validation = validateData(loginSchema, req.body);
+      const validation = validateData(LoginSchema, req.body);
 
       if (!validation.success) {
         res.status(400).json({
