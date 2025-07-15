@@ -1,25 +1,22 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { Op } from "sequelize";
-import { Profile } from "../models/Profile";
 import { JWT_SECRET } from "../config/jwtConfig";
 import { LoginData, RegisterData } from "../schemas/authSchemas";
 import { AuthResponse, TokenResponse } from "../schemas/authSchemas";
+import { profileRepository } from "../repositories/profileRepository";
+import { createAppError } from "../middleware/errorHandler";
 
-export class AuthService {
-  private async hashPassword(password: string): Promise<string> {
+export const authService = {
+  async hashPassword(password: string): Promise<string> {
     const saltRounds = 12;
     return bcrypt.hash(password, saltRounds);
-  }
+  },
 
-  private async comparePassword(
-    password: string,
-    hash: string
-  ): Promise<boolean> {
+  async comparePassword(password: string, hash: string): Promise<boolean> {
     return bcrypt.compare(password, hash);
-  }
+  },
 
-  private generateToken(payload: {
+  generateToken(payload: {
     id: number;
     username: string;
     email: string;
@@ -29,36 +26,24 @@ export class AuthService {
     }
 
     return jwt.sign(payload, JWT_SECRET, { expiresIn: "24h" });
-  }
+  },
 
-  private isEmail(identifier: string): boolean {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(identifier);
-  }
-
-  /**
-   * Registra um novo usuário
-   * @param data - Dados validados para registro
-   * @returns Promise<AuthResponse> - Perfil criado sem senha e autenticação
-   */
   async register(data: RegisterData): Promise<AuthResponse> {
-    const existingProfile = await Profile.findOne({
-      where: {
-        [Op.or]: [{ username: data.username }, { email: data.email }],
-      },
-    });
+    const existingProfile = await profileRepository.findByEmailOrUsername(
+      data.email,
+      data.username
+    );
 
     if (existingProfile) {
-      throw new Error("Usuário ou email já existe!");
+      throw createAppError("Usuário ou email já existe!", 409);
     }
 
     const hashedPassword = await this.hashPassword(data.password);
-    const newProfile = await Profile.create({
-      username: data.username,
-      email: data.email,
-      name: data.name ?? undefined,
+    const newProfile = await profileRepository.create({
+      ...data,
       password: hashedPassword,
     });
+
     const token = this.generateToken({
       id: newProfile.id,
       username: newProfile.username,
@@ -74,22 +59,13 @@ export class AuthService {
         name: newProfile.name,
       },
     };
-  }
+  },
 
-  /**
-   * Realiza login do usuário
-   * @param loginData - Dados validados para login
-   * @returns Promise<AuthResponse> - Token
-   */
   async login({ identifier, password }: LoginData): Promise<TokenResponse> {
-    const isEmail = this.isEmail(identifier);
-
-    const profile = await Profile.findOne({
-      where: isEmail ? { email: identifier } : { username: identifier },
-    });
+    const profile = await profileRepository.findByUsernameOrEmail(identifier);
 
     if (!profile) {
-      throw new Error("Credenciais inválidas!");
+      throw createAppError("Credenciais inválidas!", 401);
     }
 
     const isPasswordValid = await this.comparePassword(
@@ -98,7 +74,7 @@ export class AuthService {
     );
 
     if (!isPasswordValid) {
-      throw new Error("Credenciais inválidas!");
+      throw createAppError("Credenciais inválidas!", 401);
     }
 
     const token = this.generateToken({
@@ -110,5 +86,5 @@ export class AuthService {
     return {
       token,
     };
-  }
-}
+  },
+};

@@ -1,34 +1,56 @@
-import { AuthService } from "../services/authService";
-import {
-  RegisterData,
-  LoginData,
-  AuthResponse,
-  TokenResponse,
-} from "../schemas/authSchemas";
+import { authService } from "../services/authService";
+import { Request, Response, NextFunction } from "express";
+import { validateData } from "../utils/validateData";
+import { RegisterSchema, LoginSchema } from "../schemas/authSchemas";
 
-export class AuthController {
-  constructor(private authService: AuthService) {}
+export const authController = {
+  async register(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const validation = validateData(RegisterSchema, req.body);
+      if (!validation.success) {
+        res.status(400).json({
+          success: false,
+          message: "Dados inválidos",
+          errors: validation.issues,
+        });
+        return;
+      }
+      const profile = await authService.register(validation.data);
+      res.status(201).json({
+        success: true,
+        data: profile,
+        message: "Usuário registrado com sucesso!",
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
 
-  /**
-   * Registra um novo usuário
-   * @param registerData - Dados de registro validados
-   * @returns Promise<SafeProfile> - Perfil do usuário registrado sem senha
-   */
-  async register(registerData: RegisterData): Promise<AuthResponse> {
-    const profile = await this.authService.register(registerData);
-    return profile;
-  }
+  async login(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const validation = validateData(LoginSchema, req.body);
 
-  /**
-   * Realiza o login de um usuário
-   * @param loginData - Dados de login validados
-   * @returns Promise<AuthResponse> - Resposta de autenticação com token e perfil
-   */
-  async login(loginData: LoginData): Promise<TokenResponse> {
-    const result = await this.authService.login(loginData);
-    return result;
-  }
-}
-// Exporta uma instância do AuthController com o AuthService injetado
-// Isso permite que o AuthController seja usado em outras partes da aplicação, como rotas.
-export const authController = new AuthController(new AuthService());
+      if (!validation.success) {
+        res.status(400).json({
+          success: false,
+          message: "Dados inválidos",
+          errors: validation.issues,
+        });
+        return;
+      }
+      const profile = await authService.login(validation.data);
+
+      res.status(200).json({
+        success: true,
+        data: profile,
+        message: "Login realizado com sucesso!",
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+};

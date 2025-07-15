@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import authRoutes from "./routes/authRoutes";
 import profileRoutes from "./routes/profileRoutes";
+import { errorHandler } from "./middleware/errorHandler";
 
 const app = express();
 
@@ -21,17 +22,6 @@ app.use(express.json());
 app.use("/api/auth", authRoutes); // Rotas de autenticação
 app.use("/api/profile", profileRoutes); // Rotas de perfil
 
-// Error handler
-app.use(
-  (
-    err: any,
-    req: express.Request,
-    res: express.Response,
-    next: express.NextFunction
-  ) => {
-    console.error("❌ Error:", err);
-    res.status(500).json({ message: "Erro interno do servidor" });
-  }
-);
+app.use(errorHandler);
 
 export default app;

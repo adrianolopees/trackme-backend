@@ -47,7 +47,6 @@ export const profileController = {
       const avatarBuffer = req.file?.buffer;
       const { bio } = req.body;
 
-      // Validação com Zod
       const validation = validateData(ProfileUpdateSchema, { bio });
       if (!validation.success) {
         res.status(400).json({
