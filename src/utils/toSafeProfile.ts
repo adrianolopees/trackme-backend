@@ -8,6 +8,8 @@ export function toSafeProfile(profile: Profile): SafeProfile {
     email: profile.email,
     name: profile.name,
     bio: profile.bio ?? undefined,
-    avatar: profile.avatar ? String(profile.avatar) : undefined,
+    avatar: profile.avatar
+      ? `data:image/png;base64,${profile.avatar}`
+      : undefined,
   };
 }

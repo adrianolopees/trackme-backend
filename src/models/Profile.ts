@@ -7,16 +7,11 @@ export interface ProfileAttributes {
   password: string;
   name: string;
   bio?: string;
-  avatar?: Buffer;
-  createdAt: Date;
-  updatedAt: Date;
+  avatar?: Buffer | null;
 }
 
 export interface ProfileCreationAttributes
-  extends Optional<
-    ProfileAttributes,
-    "id" | "bio" | "avatar" | "createdAt" | "updatedAt"
-  > {}
+  extends Optional<ProfileAttributes, "id" | "bio" | "avatar"> {}
 
 class Profile
   extends Model<ProfileAttributes, ProfileCreationAttributes>
@@ -29,9 +24,6 @@ class Profile
   declare name: string;
   declare bio?: string;
   declare avatar?: Buffer;
-
-  declare readonly createdAt: Date;
-  declare readonly updatedAt: Date;
 
   // Associações
   declare posts?: any[];
@@ -73,16 +65,6 @@ Profile.init(
         const raw = this.getDataValue("avatar");
         return raw ? raw.toString("base64") : null;
       },
-    },
-    createdAt: {
-      type: DataTypes.DATE,
-      allowNull: false,
-      defaultValue: DataTypes.NOW,
-    },
-    updatedAt: {
-      type: DataTypes.DATE,
-      allowNull: false,
-      defaultValue: DataTypes.NOW,
     },
   },
   {

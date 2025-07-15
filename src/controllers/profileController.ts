@@ -1,6 +1,8 @@
 import { Request, Response, NextFunction } from "express";
 import { profileService } from "../services/profileService";
 import { ProfileUpdateSchema } from "../schemas/profileSchemas";
+import { validateData } from "../utils/validateData";
+import { UpdateProfileInput } from "../types/profileTypes";
 
 export const profileController = {
   async getMyProfile(
@@ -46,18 +48,18 @@ export const profileController = {
       const { bio } = req.body;
 
       // Validação com Zod
-      const result = ProfileUpdateSchema.safeParse({ bio });
-      if (!result.success) {
+      const validation = validateData(ProfileUpdateSchema, { bio });
+      if (!validation.success) {
         res.status(400).json({
           success: false,
           message: "Dados inválidos",
-          errors: result.error.format(),
+          errors: validation.issues,
         });
         return;
       }
 
-      const updateData = {
-        ...result.data,
+      const updateData: UpdateProfileInput = {
+        ...validation.data,
         ...(avatarBuffer ? { avatar: avatarBuffer } : {}),
       };
 

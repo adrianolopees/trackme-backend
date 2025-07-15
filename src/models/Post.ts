@@ -9,15 +9,10 @@ interface PostAttributes {
   visibility: number;
   playlistId?: number;
   profileId: number;
-  createdAt: Date;
-  updatedAt: Date;
 }
 
 interface PostCreationAttributes
-  extends Optional<
-    PostAttributes,
-    "id" | "img" | "playlistId" | "createdAt" | "updatedAt"
-  > {}
+  extends Optional<PostAttributes, "id" | "img" | "playlistId"> {}
 
 class Post
   extends Model<PostAttributes, PostCreationAttributes>
@@ -29,8 +24,6 @@ class Post
   declare visibility: number;
   declare playlistId?: number;
   declare profileId: number;
-  declare readonly createdAt: Date;
-  declare readonly updatedAt: Date;
 
   // Associações serão definidas depois
   declare Profile?: any;
@@ -63,16 +56,6 @@ Post.init(
     profileId: {
       type: DataTypes.INTEGER,
       allowNull: false,
-    },
-    createdAt: {
-      type: DataTypes.DATE,
-      allowNull: false,
-      defaultValue: DataTypes.NOW,
-    },
-    updatedAt: {
-      type: DataTypes.DATE,
-      allowNull: false,
-      defaultValue: DataTypes.NOW,
     },
   },
   {

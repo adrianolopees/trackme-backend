@@ -2,7 +2,6 @@ import { z } from "zod";
 
 export const ProfileUpdateSchema = z.object({
   bio: z.string().max(160, "Bio deve ter no máximo 160 caracteres").optional(),
-  avatar: z.string().optional(),
 });
 
 export const ProfileSchema = z.object({
