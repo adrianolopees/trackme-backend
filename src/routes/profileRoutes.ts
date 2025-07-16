@@ -5,7 +5,6 @@ import { upload } from "../middleware/multerConfig";
 
 const router = express.Router();
 
-// Rotas de perfil
 router.get("/me", authMiddleware, profileController.getMyProfile);
 router.put(
   "/me",

@@ -23,7 +23,7 @@ export const profileRepository = {
   },
 
   // 🔹 Adicionado para login
-  async findByUsernameOrEmail(identifier: string) {
+  async findByIdentifier(identifier: string) {
     return await Profile.findOne({
       where: {
         [Op.or]: [{ email: identifier }, { username: identifier }],

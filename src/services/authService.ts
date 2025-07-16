@@ -57,12 +57,14 @@ export const authService = {
         username: newProfile.username,
         email: newProfile.email,
         name: newProfile.name,
+        createdAt: newProfile.createdAt,
+        updatedAt: newProfile.updatedAt,
       },
     };
   },
 
   async login({ identifier, password }: LoginData): Promise<TokenResponse> {
-    const profile = await profileRepository.findByUsernameOrEmail(identifier);
+    const profile = await profileRepository.findByIdentifier(identifier);
 
     if (!profile) {
       throw createAppError("Credenciais inválidas!", 401);

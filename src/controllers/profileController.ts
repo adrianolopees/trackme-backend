@@ -3,17 +3,14 @@ import { profileService } from "../services/profileService";
 import { ProfileUpdateSchema } from "../schemas/profileSchemas";
 import { validateData } from "../utils/validateData";
 import { UpdateProfileInput } from "../types/profileTypes";
+import { error } from "console";
 
 export const profileController = {
   async getMyProfile(req: Request, res: Response, next: NextFunction) {
     try {
       const profileId = req.profile?.id;
       if (!profileId) {
-        res.status(401).json({
-          success: false,
-
-          message: "Não autorizado",
-        });
+        res.status(401).json({ success: false, message: "Não autorizado" });
         return;
       }
 

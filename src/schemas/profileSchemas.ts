@@ -8,10 +8,10 @@ export const ProfileSchema = z.object({
   id: z.number(),
   username: z.string(),
   email: z.string().email(),
+  password: z.string(),
   name: z.string(),
   bio: z.string().optional(),
   avatar: z.string().optional(),
-  password: z.string(),
   createdAt: z.date(),
   updatedAt: z.date(),
 });
