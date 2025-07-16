@@ -9,7 +9,7 @@ const startServer = async () => {
     await sequelize.sync();
     console.log("🟢 Database connected and models synchronized!");
 
-    const port = process.env.PORT || 3333;
+    const port = process.env.PORT || 5432;
 
     app.listen(port, () => console.log(`🚀 Server running on port ${port}`));
   } catch (error) {
