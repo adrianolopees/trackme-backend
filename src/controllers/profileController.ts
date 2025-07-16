@@ -5,11 +5,7 @@ import { validateData } from "../utils/validateData";
 import { UpdateProfileInput } from "../types/profileTypes";
 
 export const profileController = {
-  async getMyProfile(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> {
+  async getMyProfile(req: Request, res: Response, next: NextFunction) {
     try {
       const profileId = req.profile?.id;
       if (!profileId) {
@@ -32,11 +28,7 @@ export const profileController = {
     }
   },
 
-  async updateMyProfile(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> {
+  async updateMyProfile(req: Request, res: Response, next: NextFunction) {
     try {
       const profileId = req.profile?.id;
       if (!profileId) {

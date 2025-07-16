@@ -12,6 +12,8 @@ export const ProfileSchema = z.object({
   bio: z.string().optional(),
   avatar: z.string().optional(),
   password: z.string(),
+  createdAt: z.date(),
+  updatedAt: z.date(),
 });
 
 export const SafeProfileSchema = ProfileSchema.omit({ password: true });

@@ -2,12 +2,13 @@ import { SafeProfile } from "../schemas/profileSchemas";
 import { profileRepository } from "../repositories/profileRepository";
 import { toSafeProfile } from "../utils/toSafeProfile";
 import { UpdateProfileInput } from "../types/profileTypes";
+import { createAppError } from "../middleware/errorHandler";
 
 export const profileService = {
   async getProfile(id: number): Promise<SafeProfile> {
     const profile = await profileRepository.findById(id);
     if (!profile) {
-      throw new Error("Perfil não encontrado");
+      throw createAppError("Perfil não encontrado", 404);
     }
     return toSafeProfile(profile);
   },
@@ -20,7 +21,7 @@ export const profileService = {
     const updatedProfile = await profileRepository.findById(id);
 
     if (!updatedProfile) {
-      throw new Error("Perfil não encontrado após atualização");
+      throw createAppError("Perfil não encontrado após atualização", 404);
     }
     return toSafeProfile(updatedProfile);
   },

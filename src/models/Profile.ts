@@ -25,6 +25,9 @@ class Profile
   declare bio?: string;
   declare avatar?: Buffer;
 
+  declare readonly createdAt: Date;
+  declare readonly updatedAt: Date;
+
   // Associações
   declare posts?: any[];
 }
