@@ -1,4 +1,3 @@
-// carrega JWT_SECRET do .env
 import dotenv from "dotenv";
 dotenv.config();
 
