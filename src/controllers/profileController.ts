@@ -3,7 +3,6 @@ import { profileService } from "../services/profileService";
 import { ProfileUpdateSchema } from "../schemas/profileSchemas";
 import { validateData } from "../utils/validateData";
 import { UpdateProfileInput } from "../types/profileTypes";
-import { error } from "console";
 
 export const profileController = {
   async getMyProfile(req: Request, res: Response, next: NextFunction) {
