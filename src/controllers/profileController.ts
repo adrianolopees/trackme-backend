@@ -56,11 +56,15 @@ export const profileController = {
         });
         try {
           processedBuffer = await sharp(req.file.buffer)
+            .rotate()
             .resize(256, 256, {
               fit: "cover", // Mantém proporção e corta se necessário
               position: "center",
             })
-            .jpeg({ quality: 80 })
+            .jpeg({
+              quality: 80,
+              progressive: true,
+            })
             .toBuffer();
           console.log("✅ Imagem processada com sucesso:", {
             originalSize: req.file.buffer.length,
