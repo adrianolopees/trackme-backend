@@ -8,9 +8,8 @@
     "build": "yarn tsc",
     "start": "node dist/server.js",
     "migrate": "yarn sequelize-cli db:migrate",
-    "migrate:undo": "yarn sequelize-cli db:migrate:undo",
-    "test": "tsx src/testLogin.ts",
-    "test2": "tsx src/testRegister.ts"
+    "migration:create": "sequelize-cli migration:generate --name",
+    "migrate:undo": "yarn sequelize-cli db:migrate:undo"
   },
   "repository": {
     "type": "git",

@@ -33,7 +33,7 @@ export const profileController = {
         return;
       }
 
-      const { bio } = req.body;
+      const { bio, profileSetupDone } = req.body;
       const validation = validateData(ProfileUpdateSchema, { bio });
       if (!validation.success) {
         res.status(400).json({
@@ -49,11 +49,6 @@ export const profileController = {
 
       // Processa a imagem se existir
       if (req.file?.buffer) {
-        console.log("📸 Imagem recebida:", {
-          originalSize: req.file.size,
-          mimeType: req.file.mimetype,
-          bufferLength: req.file.buffer.length,
-        });
         try {
           processedBuffer = await sharp(req.file.buffer)
             .rotate()
@@ -66,14 +61,6 @@ export const profileController = {
               progressive: true,
             })
             .toBuffer();
-          console.log("✅ Imagem processada com sucesso:", {
-            originalSize: req.file.buffer.length,
-            processedSize: processedBuffer.length,
-            reduction: `${(
-              (1 - processedBuffer.length / req.file.buffer.length) *
-              100
-            ).toFixed(1)}%`,
-          });
         } catch (imageError) {
           console.error("❌ Erro ao processar imagem:", imageError);
           res.status(400).json({
@@ -88,7 +75,9 @@ export const profileController = {
         ...validation.data,
         ...(processedBuffer ? { avatar: processedBuffer } : {}),
       };
-
+      if (profileSetupDone !== undefined) {
+        updateData.profileSetupDone = profileSetupDone === "true";
+      }
       const updatedProfile = await profileService.updateProfile(
         profileId,
         updateData

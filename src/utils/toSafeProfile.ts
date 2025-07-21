@@ -12,6 +12,7 @@ export function toSafeProfile(profile: Profile): SafeProfile {
     avatar: profile.avatar
       ? `data:image/png;base64,${profile.avatar}`
       : undefined,
+    profileSetupDone: profile.profileSetupDone,
     createdAt: profile.createdAt,
     updatedAt: profile.updatedAt,
   };

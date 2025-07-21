@@ -8,10 +8,14 @@ export interface ProfileAttributes {
   name: string;
   bio?: string;
   avatar?: Buffer | null;
+  profileSetupDone: boolean;
 }
 
 export interface ProfileCreationAttributes
-  extends Optional<ProfileAttributes, "id" | "bio" | "avatar"> {}
+  extends Optional<
+    ProfileAttributes,
+    "id" | "bio" | "avatar" | "profileSetupDone"
+  > {}
 
 class Profile
   extends Model<ProfileAttributes, ProfileCreationAttributes>
@@ -24,7 +28,7 @@ class Profile
   declare name: string;
   declare bio?: string;
   declare avatar?: Buffer;
-
+  declare profileSetupDone: boolean;
   declare readonly createdAt: Date;
   declare readonly updatedAt: Date;
 
@@ -68,6 +72,11 @@ Profile.init(
         const raw = this.getDataValue("avatar");
         return raw ? raw.toString("base64") : null;
       },
+    },
+    profileSetupDone: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false, // 👈 obrigatório no primeiro setup
     },
   },
   {
