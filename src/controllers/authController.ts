@@ -33,7 +33,6 @@ export const authController = {
   async login(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const validation = validateData(LoginSchema, req.body);
-
       if (!validation.success) {
         res.status(400).json({
           success: false,
@@ -42,8 +41,8 @@ export const authController = {
         });
         return;
       }
-      const profile = await authService.login(validation.data);
 
+      const profile = await authService.login(validation.data);
       res.status(200).json({
         success: true,
         data: profile,

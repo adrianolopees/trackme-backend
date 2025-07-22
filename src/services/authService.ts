@@ -57,6 +57,7 @@ export const authService = {
         username: newProfile.username,
         email: newProfile.email,
         name: newProfile.name,
+        profileSetupDone: newProfile.profileSetupDone,
         createdAt: newProfile.createdAt,
         updatedAt: newProfile.updatedAt,
       },
