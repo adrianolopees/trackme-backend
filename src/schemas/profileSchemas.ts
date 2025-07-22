@@ -12,6 +12,7 @@ export const ProfileSchema = z.object({
   name: z.string(),
   bio: z.string().optional(),
   avatar: z.string().optional(),
+  profileSetupDone: z.boolean(),
   createdAt: z.date(),
   updatedAt: z.date(),
 });
