@@ -4,15 +4,15 @@ import { JWT_SECRET } from "../config/jwtConfig";
 import {
   LoginData,
   RegisterData,
-  AuthResponse,
-  TokenResponse,
+  AuthData,
+  TokenData,
 } from "../schemas/authSchemas";
 import { profileRepository } from "../repositories/profileRepository";
 import { createAppError } from "../middleware/errorHandler";
 import { toSafeProfile } from "../utils/toSafeProfile";
 
 export const authService = {
-  async register(data: RegisterData): Promise<AuthResponse> {
+  async register(data: RegisterData): Promise<AuthData> {
     const existingProfile = await profileRepository.findByEmailOrUsername(
       data.email,
       data.username
@@ -40,7 +40,7 @@ export const authService = {
     };
   },
 
-  async login(data: LoginData): Promise<TokenResponse> {
+  async login(data: LoginData): Promise<TokenData> {
     const profile = await profileRepository.findByIdentifier(data.identifier);
 
     if (!profile) {

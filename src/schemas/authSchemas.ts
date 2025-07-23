@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { SafeProfileSchema } from "./profileSchemas";
 
+// Schemas de entrada
 export const RegisterSchema = z.object({
   username: z
     .string({
@@ -47,7 +48,8 @@ export const LoginSchema = z.object({
     .min(6),
 });
 
-export const AuthResponseSchema = z.object({
+// Schemas dos dados internos (o que vai no campo 'data')
+export const AuthDataSchema = z.object({
   token: z.string({
     required_error: "Token é obrigatório",
     invalid_type_error: "Token deve ser uma string",
@@ -55,14 +57,17 @@ export const AuthResponseSchema = z.object({
   profile: SafeProfileSchema,
 });
 
-export const TokenResponseSchema = z.object({
+export const TokenDataSchema = z.object({
   token: z.string({
     required_error: "Token é obrigatório",
     invalid_type_error: "Token deve ser uma string",
   }),
 });
 
+// Types inferidos
 export type RegisterData = z.infer<typeof RegisterSchema>;
 export type LoginData = z.infer<typeof LoginSchema>;
-export type AuthResponse = z.infer<typeof AuthResponseSchema>;
-export type TokenResponse = z.infer<typeof TokenResponseSchema>;
+
+// Types dos dados internos
+export type AuthData = z.infer<typeof AuthDataSchema>;
+export type TokenData = z.infer<typeof TokenDataSchema>;
