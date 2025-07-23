@@ -1,33 +1,17 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { JWT_SECRET } from "../config/jwtConfig";
-import { LoginData, RegisterData } from "../schemas/authSchemas";
-import { AuthResponse, TokenResponse } from "../schemas/authSchemas";
+import {
+  LoginData,
+  RegisterData,
+  AuthResponse,
+  TokenResponse,
+} from "../schemas/authSchemas";
 import { profileRepository } from "../repositories/profileRepository";
 import { createAppError } from "../middleware/errorHandler";
+import { toSafeProfile } from "../utils/toSafeProfile";
 
 export const authService = {
-  async hashPassword(password: string): Promise<string> {
-    const saltRounds = 12;
-    return bcrypt.hash(password, saltRounds);
-  },
-
-  async comparePassword(password: string, hash: string): Promise<boolean> {
-    return bcrypt.compare(password, hash);
-  },
-
-  generateToken(payload: {
-    id: number;
-    username: string;
-    email: string;
-  }): string {
-    if (!JWT_SECRET) {
-      throw new Error("JWT_SECRET não está configurado");
-    }
-
-    return jwt.sign(payload, JWT_SECRET, { expiresIn: "24h" });
-  },
-
   async register(data: RegisterData): Promise<AuthResponse> {
     const existingProfile = await profileRepository.findByEmailOrUsername(
       data.email,
@@ -52,27 +36,19 @@ export const authService = {
 
     return {
       token,
-      profile: {
-        id: newProfile.id,
-        username: newProfile.username,
-        email: newProfile.email,
-        name: newProfile.name,
-        profileSetupDone: newProfile.profileSetupDone,
-        createdAt: newProfile.createdAt,
-        updatedAt: newProfile.updatedAt,
-      },
+      profile: toSafeProfile(newProfile),
     };
   },
 
-  async login({ identifier, password }: LoginData): Promise<TokenResponse> {
-    const profile = await profileRepository.findByIdentifier(identifier);
+  async login(data: LoginData): Promise<TokenResponse> {
+    const profile = await profileRepository.findByIdentifier(data.identifier);
 
     if (!profile) {
       throw createAppError("Credenciais inválidas!", 401);
     }
 
     const isPasswordValid = await this.comparePassword(
-      password,
+      data.password,
       profile.password
     );
 
@@ -89,5 +65,26 @@ export const authService = {
     return {
       token,
     };
+  },
+
+  async hashPassword(password: string): Promise<string> {
+    const saltRounds = 12;
+    return bcrypt.hash(password, saltRounds);
+  },
+
+  async comparePassword(password: string, hash: string): Promise<boolean> {
+    return bcrypt.compare(password, hash);
+  },
+
+  generateToken(payload: {
+    id: number;
+    username: string;
+    email: string;
+  }): string {
+    if (!JWT_SECRET) {
+      throw new Error("JWT_SECRET não está configurado");
+    }
+
+    return jwt.sign(payload, JWT_SECRET, { expiresIn: "24h" });
   },
 };

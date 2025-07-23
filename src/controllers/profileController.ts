@@ -1,9 +1,9 @@
 import { Request, Response, NextFunction } from "express";
 import { profileService } from "../services/profileService";
 import { ProfileUpdateSchema } from "../schemas/profileSchemas";
-import { validateData } from "../utils/validateData";
 import { UpdateProfileInput } from "../types/profileTypes";
-import sharp from "sharp";
+import { validateData } from "../utils/validateData";
+import { imageProcessor } from "../utils/imageProcessor";
 
 export const profileController = {
   async getMyProfile(req: Request, res: Response, next: NextFunction) {
@@ -44,23 +44,21 @@ export const profileController = {
         return;
       }
 
-      // Inicializa processedBuffer como undefined
       let processedBuffer: Buffer | undefined;
-
-      // Processa a imagem se existir
       if (req.file?.buffer) {
         try {
-          processedBuffer = await sharp(req.file.buffer)
-            .rotate()
-            .resize(256, 256, {
-              fit: "cover", // Mantém proporção e corta se necessário
-              position: "center",
-            })
-            .jpeg({
-              quality: 80,
-              progressive: true,
-            })
-            .toBuffer();
+          const isValidImage = await imageProcessor.validateImage(
+            req.file.buffer
+          );
+          if (!isValidImage) {
+            res.status(400).json({
+              success: false,
+              message: "Arquivo enviado não é uma imagem válida",
+            });
+            return;
+          }
+
+          processedBuffer = await imageProcessor.processAvatar(req.file.buffer);
         } catch (imageError) {
           console.error("❌ Erro ao processar imagem:", imageError);
           res.status(400).json({
@@ -75,9 +73,11 @@ export const profileController = {
         ...validation.data,
         ...(processedBuffer ? { avatar: processedBuffer } : {}),
       };
+
       if (profileSetupDone !== undefined) {
         updateData.profileSetupDone = profileSetupDone === "true";
       }
+
       const updatedProfile = await profileService.updateProfile(
         profileId,
         updateData

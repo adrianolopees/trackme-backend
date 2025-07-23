@@ -4,11 +4,7 @@ import { validateData } from "../utils/validateData";
 import { RegisterSchema, LoginSchema } from "../schemas/authSchemas";
 
 export const authController = {
-  async register(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> {
+  async register(req: Request, res: Response, next: NextFunction) {
     try {
       const validation = validateData(RegisterSchema, req.body);
       if (!validation.success) {
@@ -30,7 +26,7 @@ export const authController = {
     }
   },
 
-  async login(req: Request, res: Response, next: NextFunction): Promise<void> {
+  async login(req: Request, res: Response, next: NextFunction) {
     try {
       const validation = validateData(LoginSchema, req.body);
       if (!validation.success) {
