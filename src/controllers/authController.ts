@@ -38,10 +38,10 @@ export const authController = {
         return;
       }
 
-      const profile = await authService.login(validation.data);
+      const token = await authService.login(validation.data);
       res.status(200).json({
         success: true,
-        data: profile,
+        data: token,
         message: "Login realizado com sucesso!",
       });
     } catch (error) {

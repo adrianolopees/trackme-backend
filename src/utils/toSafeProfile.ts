@@ -1,9 +1,8 @@
 import { Profile } from "../models/Profile";
-import { SafeProfile, SafeProfileSchema } from "../schemas/profileSchemas";
-import { validateData } from "./validateData";
+import { SafeProfile } from "../schemas/profileSchemas";
 
 export function toSafeProfile(profile: Profile): SafeProfile {
-  const safeProfile = {
+  return {
     id: profile.id,
     username: profile.username,
     email: profile.email,
@@ -16,11 +15,4 @@ export function toSafeProfile(profile: Profile): SafeProfile {
     createdAt: profile.createdAt,
     updatedAt: profile.updatedAt,
   };
-  const validation = validateData(SafeProfileSchema, safeProfile);
-  if (!validation.success) {
-    throw new Error(
-      "Erro ao validar SafeProfile: " + JSON.stringify(validation.issues)
-    );
-  }
-  return validation.data;
 }

@@ -51,7 +51,6 @@ export const authService = {
       data.password,
       profile.password
     );
-
     if (!isPasswordValid) {
       throw createAppError("Credenciais inválidas!", 401);
     }
@@ -61,7 +60,6 @@ export const authService = {
       username: profile.username,
       email: profile.email,
     });
-
     return {
       token,
     };
