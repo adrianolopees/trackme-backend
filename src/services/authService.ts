@@ -1,19 +1,21 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { JWT_SECRET } from "../config/jwtConfig";
+import { JwtPayload } from "../types/jwt";
 import {
   LoginData,
   RegisterData,
   AuthData,
   TokenData,
 } from "../schemas/authSchemas";
+import { authRepository } from "../repositories/authRepository";
 import { profileRepository } from "../repositories/profileRepository";
 import { createAppError } from "../middleware/errorHandler";
 import { toSafeProfile } from "../utils/toSafeProfile";
 
 export const authService = {
   async register(data: RegisterData): Promise<AuthData> {
-    const existingProfile = await profileRepository.findByEmailOrUsername(
+    const existingProfile = await authRepository.findByEmailOrUsername(
       data.email,
       data.username
     );
@@ -41,7 +43,7 @@ export const authService = {
   },
 
   async login(data: LoginData): Promise<TokenData> {
-    const profile = await profileRepository.findByIdentifier(data.identifier);
+    const profile = await authRepository.findByIdentifier(data.identifier);
 
     if (!profile) {
       throw createAppError("Credenciais inválidas!", 401);
@@ -74,11 +76,7 @@ export const authService = {
     return bcrypt.compare(password, hash);
   },
 
-  generateToken(payload: {
-    id: number;
-    username: string;
-    email: string;
-  }): string {
+  generateToken(payload: JwtPayload): string {
     if (!JWT_SECRET) {
       throw new Error("JWT_SECRET não está configurado");
     }
