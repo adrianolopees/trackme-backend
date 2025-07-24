@@ -1,7 +1,7 @@
 import { SafeProfile } from "../schemas/profileSchemas";
 import { profileRepository } from "../repositories/profileRepository";
 import { toSafeProfile } from "../utils/toSafeProfile";
-import { UpdateProfileInput } from "../types/profileTypes";
+import { ProfileUpdateData } from "../schemas/profileSchemas";
 import { createAppError } from "../middleware/errorHandler";
 
 export const profileService = {
@@ -15,7 +15,7 @@ export const profileService = {
 
   async updateProfile(
     id: number,
-    data: UpdateProfileInput
+    data: ProfileUpdateData
   ): Promise<SafeProfile> {
     await profileRepository.update(id, data);
     const updatedProfile = await profileRepository.findById(id);

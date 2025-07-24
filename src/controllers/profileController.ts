@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { profileService } from "../services/profileService";
 import { ProfileUpdateSchema } from "../schemas/profileSchemas";
-import { UpdateProfileInput } from "../types/profileTypes";
+import { ProfileUpdateData } from "../schemas/profileSchemas";
 import { validateData } from "../utils/validateData";
 import { imageProcessor } from "../utils/imageProcessor";
 
@@ -69,7 +69,7 @@ export const profileController = {
         }
       }
 
-      const updateData: UpdateProfileInput = {
+      const updateData: ProfileUpdateData = {
         ...validation.data,
         ...(processedBuffer ? { avatar: processedBuffer } : {}),
       };
