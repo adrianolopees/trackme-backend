@@ -1,7 +1,10 @@
-// src/models/index.ts
+import sequelize from "../config/database";
 import { Profile } from "./Profile";
 import { Post } from "./Post";
-// import { Playlist } from './Playlist'; // quando criar
+import { Follow, initFollowModel } from "./Follow";
+
+// Inicializa o model Follow
+initFollowModel(sequelize);
 
 // ===== TODAS AS ASSOCIAÇÕES AQUI =====
 
@@ -16,20 +19,26 @@ Post.belongsTo(Profile, {
   as: "profile",
 });
 
-// Post -> Playlist (N:1) - quando criar o model Playlist
-// Post.belongsTo(Playlist, {
-//   foreignKey: 'playlistId',
-//   as: 'playlist',
-// });
+// Profile -> Follow (seguidores e seguidos)
+Follow.belongsTo(Profile, {
+  foreignKey: "followerProfileId",
+  as: "follower",
+});
 
-// Playlist.hasMany(Post, {
-//   foreignKey: 'playlistId',
-//   as: 'posts',
-// });
+Follow.belongsTo(Profile, {
+  foreignKey: "followingProfileId",
+  as: "following",
+});
+
+Profile.hasMany(Follow, {
+  foreignKey: "followingProfileId",
+  as: "followers",
+});
+
+Profile.hasMany(Follow, {
+  foreignKey: "followerProfileId",
+  as: "following",
+});
 
 // ===== EXPORTAR TODOS OS MODELS =====
-export {
-  Profile,
-  Post,
-  // Playlist, // quando criar
-};
+export { Profile, Post, Follow };
