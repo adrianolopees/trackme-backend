@@ -1,4 +1,5 @@
 import { Follow } from "../models/Follow";
+import { Profile } from "../models";
 
 export const followRepository = {
   async isFollowing(followerId: number, followingId: number): Promise<boolean> {
@@ -9,15 +10,14 @@ export const followRepository = {
       },
     });
 
-    return !!existing; // retorna true se existir, false se não
+    return !!existing;
   },
 
-  // Cria um novo follow
   async createFollow(followerId: number, followingId: number): Promise<Follow> {
     const follow = await Follow.create({
       followerProfileId: followerId,
       followingProfileId: followingId,
-      followedAt: new Date(), // opcional, pois já tem defaultValue
+      followedAt: new Date(),
     });
 
     return follow;
@@ -32,5 +32,59 @@ export const followRepository = {
     });
 
     return deletedCount; // retorna o número de registros excluídos (0 ou 1)
+  },
+
+  async getFollowers(profileId: number, page = 1, limit = 10) {
+    const offset = (page - 1) * limit;
+
+    const { rows: followers, count } = await Profile.findAndCountAll({
+      include: [
+        {
+          model: Follow,
+          as: "followers",
+          where: { followingProfileId: profileId },
+          attributes: [],
+        },
+      ],
+      offset,
+      limit,
+      order: [["followedAt", "DESC"]],
+    });
+
+    const totalPages = Math.ceil(count / limit);
+
+    return {
+      followers,
+      total: count,
+      currentPage: page,
+      totalPages,
+    };
+  },
+
+  async getFollowing(profileId: number, page = 1, limit = 10) {
+    const offset = (page - 1) * limit;
+
+    const { rows: following, count } = await Profile.findAndCountAll({
+      include: [
+        {
+          model: Follow,
+          as: "following",
+          where: { followingProfileId: profileId },
+          attributes: [],
+        },
+      ],
+      offset,
+      limit,
+      order: [["followedAt", "DESC"]],
+    });
+
+    const totalPages = Math.ceil(count / limit);
+
+    return {
+      following,
+      total: count,
+      currentPage: page,
+      totalPages,
+    };
   },
 };
