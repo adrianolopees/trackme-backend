@@ -4,6 +4,9 @@ import { Profile } from "../models";
 type FollowWithFollower = Follow & {
   follower: Profile;
 };
+type FollowWithFollowing = Follow & {
+  following: Profile;
+};
 
 export const followRepository = {
   async isFollowing(followerId: number, followingId: number): Promise<boolean> {
@@ -70,13 +73,13 @@ export const followRepository = {
   async getFollowing(profileId: number, page = 1, limit = 10) {
     const offset = (page - 1) * limit;
 
-    const { rows: following, count } = await Profile.findAndCountAll({
+    const { rows: following, count } = await Follow.findAndCountAll({
+      where: { followingProfileId: profileId },
       include: [
         {
-          model: Follow,
+          model: Profile,
           as: "following",
-          where: { followingProfileId: profileId },
-          attributes: [],
+          attributes: ["id", "name", "username", "avatar"],
         },
       ],
       offset,
@@ -85,9 +88,11 @@ export const followRepository = {
     });
 
     const totalPages = Math.ceil(count / limit);
-
+    const followingProfiles = (following as FollowWithFollowing[]).map(
+      (follow) => follow.following
+    );
     return {
-      following,
+      following: followingProfiles,
       total: count,
       currentPage: page,
       totalPages,
