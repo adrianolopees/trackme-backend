@@ -146,6 +146,9 @@ export const followController = {
   ): Promise<void> {
     try {
       const validation = validateData(FollowParamsSchema, req.params);
+      console.log("📝 Validation result:", validation);
+      console.log("req.query:", req.query);
+      console.log("req.params:", req.params);
       if (!validation.success) {
         res.status(400).json({
           success: false,

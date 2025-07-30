@@ -4,18 +4,6 @@ import { authMiddleware } from "../middleware/authMiddleware";
 
 const router = Router();
 
-// ROTA DE TESTE
-router.get("/test", (req, res) => {
-  console.log("🎯 ROTA DE TESTE FUNCIONOU!");
-  res.json({ message: "Follow routes funcionando!" });
-});
-
-// DEBUG - adicione este middleware para todas as rotas
-router.use((req, res, next) => {
-  console.log("🔥 FOLLOW ROUTE MIDDLEWARE:", req.method, req.url, req.params);
-  next();
-});
-
 // Rotas específicas PRIMEIRO
 router.get(
   "/:profileId/followers",

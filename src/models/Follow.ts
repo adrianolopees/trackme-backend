@@ -51,7 +51,7 @@ export const initFollowModel = (sequelize: Sequelize) => {
     {
       sequelize,
       tableName: "Follows",
-      timestamps: true,
+      timestamps: false,
       indexes: [
         {
           fields: ["followerProfileId"],
@@ -62,19 +62,6 @@ export const initFollowModel = (sequelize: Sequelize) => {
       ],
     }
   );
-
-  // Associações
-  Follow.associate = (models) => {
-    Follow.belongsTo(models.Profile, {
-      foreignKey: "followerProfileId",
-      as: "follower",
-    });
-
-    Follow.belongsTo(models.Profile, {
-      foreignKey: "followingProfileId",
-      as: "following",
-    });
-  };
 
   return Follow;
 };
