@@ -2,7 +2,6 @@ import { Op } from "sequelize";
 import { Profile } from "../models/Profile";
 
 export const authRepository = {
-  // 🔹 Adicionado para login
   async findByIdentifier(identifier: string) {
     return await Profile.findOne({
       where: {
@@ -11,7 +10,6 @@ export const authRepository = {
     });
   },
 
-  // 🔹 Adicionado para registro
   async findByEmailOrUsername(email: string, username: string) {
     return await Profile.findOne({
       where: {

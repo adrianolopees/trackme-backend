@@ -1,8 +1,10 @@
 import { Profile } from "../models/Profile";
+import { RegisterData } from "../schemas/authSchemas";
+import { ProfileUpdateData } from "../schemas/profileSchemas";
 
 export const profileRepository = {
-  async create(profileData: any) {
-    return await Profile.create(profileData);
+  async create(registerData: RegisterData) {
+    return await Profile.create(registerData);
   },
 
   async findById(id: number) {
@@ -13,7 +15,7 @@ export const profileRepository = {
     return await Profile.findOne({ where: { email } });
   },
 
-  async update(id: number, updates: Partial<any>) {
+  async update(id: number, updates: ProfileUpdateData) {
     return await Profile.update(updates, { where: { id } });
   },
 
