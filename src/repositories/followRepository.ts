@@ -74,7 +74,7 @@ export const followRepository = {
     const offset = (page - 1) * limit;
 
     const { rows: following, count } = await Follow.findAndCountAll({
-      where: { followingProfileId: profileId },
+      where: { followerProfileId: profileId },
       include: [
         {
           model: Profile,
