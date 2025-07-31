@@ -1,15 +1,11 @@
 import { NextFunction, Request, Response } from "express";
 import { FollowParamsSchema } from "../schemas/followSchemas";
-import { profileRepository } from "../repositories/profileRepository";
 import { followRepository } from "../repositories/followRepository";
+import { followService } from "../services/followService";
 import { validateData } from "../utils/validateData";
 
 export const followController = {
-  async followProfile(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> {
+  async followProfile(req: Request, res: Response, next: NextFunction) {
     try {
       const validation = validateData(FollowParamsSchema, req.params);
       if (!validation.success) {
@@ -32,55 +28,22 @@ export const followController = {
         return;
       }
 
-      if (targetProfileId === currentProfileId) {
-        res.status(400).json({
-          success: false,
-          message: "Você não pode seguir a si mesmo",
-        });
-        return;
-      }
-
-      // Verificar se o perfil alvo existe
-      const targetProfile = await profileRepository.findById(targetProfileId);
-      if (!targetProfile) {
-        res.status(404).json({
-          success: false,
-          message: "Perfil não encontrado",
-        });
-        return;
-      }
-
-      const existingFollow = await followRepository.isFollowing(
+      const followServiceResult = await followService.follow(
         currentProfileId,
         targetProfileId
       );
-      if (existingFollow) {
-        res.status(400).json({
-          success: false,
-          message: "Você já segue esse perfil",
-        });
-        return;
-      }
 
-      const follow = await followRepository.createFollow(
-        currentProfileId,
-        targetProfileId
-      );
       res.status(201).json({
         success: true,
-        data: follow,
         message: "Perfil seguido com sucesso!",
+        data: followServiceResult,
       });
     } catch (error) {
       next(error);
     }
   },
 
-  async unfollowProfile(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> {
+  async unfollowProfile(req: Request, res: Response, next: NextFunction) {
     try {
       const validation = validateData(FollowParamsSchema, req.params);
       if (!validation.success) {
@@ -103,31 +66,14 @@ export const followController = {
         return;
       }
 
-      if (currentProfileId === targetProfileId) {
-        res.status(400).json({
-          success: false,
-          message: "Você não pode deixar de seguir a si mesmo",
-        });
-        return;
-      }
-
-      const existingFollow = await followRepository.isFollowing(
+      const unfollowedProfileId = await followService.unfollow(
         currentProfileId,
         targetProfileId
       );
-      if (!existingFollow) {
-        res.status(404).json({
-          success: false,
-          message: "Você não está seguindo esse perfil",
-        });
-        return;
-      }
-
-      await followRepository.unfollow(currentProfileId, targetProfileId);
-
       res.status(200).json({
         success: true,
         message: "Perfil deixado de seguir com sucesso!",
+        data: unfollowedProfileId,
       });
     } catch (error) {
       next(error);
@@ -141,9 +87,6 @@ export const followController = {
   ): Promise<void> {
     try {
       const validation = validateData(FollowParamsSchema, req.params);
-      console.log("📝 Validation result:", validation);
-      console.log("req.query:", req.query);
-      console.log("req.params:", req.params);
       if (!validation.success) {
         res.status(400).json({
           success: false,
