@@ -60,7 +60,6 @@ export const profileController = {
 
           processedBuffer = await imageProcessor.processAvatar(req.file.buffer);
         } catch (imageError) {
-          console.error("❌ Erro ao processar imagem:", imageError);
           res.status(400).json({
             success: false,
             message: "Erro ao processar imagem",

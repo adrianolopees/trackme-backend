@@ -10,14 +10,9 @@ export const followController = {
     res: Response,
     next: NextFunction
   ): Promise<void> {
-    console.log("🚀 followProfile executado");
-    console.log("req.params:", req.params);
-    console.log("req.profile:", req.profile);
     try {
       const validation = validateData(FollowParamsSchema, req.params);
-      console.log("📝 Validation result:", validation);
       if (!validation.success) {
-        console.log("❌ Validation failed:", validation.issues);
         res.status(400).json({
           success: false,
           message: "Dados inválidos",
