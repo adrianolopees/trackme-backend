@@ -25,9 +25,7 @@ export const followService = {
       currentProfileId,
       targetProfileId
     );
-    return {
-      newFollow: follow,
-    };
+    return follow;
   },
 
   async unfollow(currentProfileId: number, targetProfileId: number) {
@@ -51,8 +49,36 @@ export const followService = {
       throw createAppError("Erro ao deixar de seguir o perfil", 500);
     }
 
-    return {
-      unfollowedProfileId: targetProfileId,
-    };
+    return targetProfileId;
+  },
+
+  async getFollowers(profileId: number, page: number, limit: number) {
+    const profile = await profileRepository.findById(profileId);
+    if (!profile) {
+      throw createAppError("Perfil não encontrado", 404);
+    }
+
+    const followers = await followRepository.getFollowers(
+      profileId,
+      page,
+      limit
+    );
+
+    return followers;
+  },
+
+  async getFollowing(profileId: number, page: number, limit: number) {
+    const profile = await profileRepository.findById(profileId);
+    if (!profile) {
+      throw createAppError("Perfil não encontrado", 404);
+    }
+
+    const following = await followRepository.getFollowing(
+      profileId,
+      page,
+      limit
+    );
+
+    return following;
   },
 };

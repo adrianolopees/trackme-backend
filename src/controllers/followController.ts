@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response } from "express";
 import { FollowParamsSchema } from "../schemas/followSchemas";
-import { followRepository } from "../repositories/followRepository";
 import { followService } from "../services/followService";
 import { validateData } from "../utils/validateData";
 
@@ -28,7 +27,7 @@ export const followController = {
         return;
       }
 
-      const followServiceResult = await followService.follow(
+      const follow = await followService.follow(
         currentProfileId,
         targetProfileId
       );
@@ -36,7 +35,7 @@ export const followController = {
       res.status(201).json({
         success: true,
         message: "Perfil seguido com sucesso!",
-        data: followServiceResult,
+        data: follow,
       });
     } catch (error) {
       next(error);
@@ -66,25 +65,21 @@ export const followController = {
         return;
       }
 
-      const unfollowedProfileId = await followService.unfollow(
+      const unfollowedId = await followService.unfollow(
         currentProfileId,
         targetProfileId
       );
       res.status(200).json({
         success: true,
         message: "Perfil deixado de seguir com sucesso!",
-        data: unfollowedProfileId,
+        data: unfollowedId,
       });
     } catch (error) {
       next(error);
     }
   },
 
-  async getFollowers(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> {
+  async getFollowers(req: Request, res: Response, next: NextFunction) {
     try {
       const validation = validateData(FollowParamsSchema, req.params);
       if (!validation.success) {
@@ -102,24 +97,20 @@ export const followController = {
       const pageNumber = parseInt(page as string, 10);
       const limitNumber = parseInt(limit as string, 10);
 
-      // Validação dos parâmetros de paginação
-      if (isNaN(pageNumber) || pageNumber < 1) {
+      if (
+        isNaN(pageNumber) ||
+        pageNumber < 1 ||
+        isNaN(limitNumber) ||
+        limitNumber < 1 ||
+        limitNumber > 100
+      ) {
         res.status(400).json({
           success: false,
-          message: "Número da página deve ser um número positivo",
+          message: "Parâmetros de paginação inválidos",
         });
         return;
       }
-
-      if (isNaN(limitNumber) || limitNumber < 1 || limitNumber > 100) {
-        res.status(400).json({
-          success: false,
-          message: "Limite deve ser um número entre 1 e 100",
-        });
-        return;
-      }
-
-      const result = await followRepository.getFollowers(
+      const followers = await followService.getFollowers(
         profileId,
         pageNumber,
         limitNumber
@@ -127,7 +118,7 @@ export const followController = {
 
       res.status(200).json({
         success: true,
-        data: result,
+        data: followers,
         message: "Seguidores obtidos com sucesso!",
       });
     } catch (error) {
@@ -135,11 +126,7 @@ export const followController = {
     }
   },
 
-  async getFollowing(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> {
+  async getFollowing(req: Request, res: Response, next: NextFunction) {
     try {
       const validation = validateData(FollowParamsSchema, req.params);
       if (!validation.success) {
@@ -157,7 +144,6 @@ export const followController = {
       const pageNumber = parseInt(page as string, 10);
       const limitNumber = parseInt(limit as string, 10);
 
-      // Validação dos parâmetros de paginação
       if (isNaN(pageNumber) || pageNumber < 1) {
         res.status(400).json({
           success: false,
@@ -174,7 +160,7 @@ export const followController = {
         return;
       }
 
-      const result = await followRepository.getFollowing(
+      const following = await followService.getFollowing(
         profileId,
         pageNumber,
         limitNumber
@@ -182,7 +168,7 @@ export const followController = {
 
       res.status(200).json({
         success: true,
-        data: result,
+        data: following,
         message: "Seguindo obtidos com sucesso!",
       });
     } catch (error) {
