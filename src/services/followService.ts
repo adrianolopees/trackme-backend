@@ -1,6 +1,7 @@
 import { createAppError } from "../middleware/errorHandler";
 import { profileRepository } from "../repositories/profileRepository";
 import { followRepository } from "../repositories/followRepository";
+import { toSafeProfile } from "../utils/toSafeProfile";
 
 export const followService = {
   async follow(currentProfileId: number, targetProfileId: number) {
@@ -58,13 +59,15 @@ export const followService = {
       throw createAppError("Perfil não encontrado", 404);
     }
 
-    const followers = await followRepository.getFollowers(
-      profileId,
-      page,
-      limit
-    );
+    const { followers, total, totalPages, currentPage } =
+      await followRepository.getFollowers(profileId, page, limit);
 
-    return followers;
+    return {
+      followers: followers.map(toSafeProfile),
+      total,
+      totalPages,
+      currentPage,
+    };
   },
 
   async getFollowing(profileId: number, page: number, limit: number) {
