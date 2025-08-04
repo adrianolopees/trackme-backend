@@ -76,12 +76,14 @@ export const followService = {
       throw createAppError("Perfil não encontrado", 404);
     }
 
-    const following = await followRepository.getFollowing(
-      profileId,
-      page,
-      limit
-    );
+    const { following, total, totalPages, currentPage } =
+      await followRepository.getFollowing(profileId, page, limit);
 
-    return following;
+    return {
+      following: following.map(toSafeProfile),
+      total,
+      totalPages,
+      currentPage,
+    };
   },
 };
