@@ -160,7 +160,7 @@ export const followController = {
         return;
       }
 
-      const following = await followService.getFollowing(
+      const followings = await followService.getFollowing(
         profileId,
         pageNumber,
         limitNumber
@@ -168,7 +168,7 @@ export const followController = {
 
       res.status(200).json({
         success: true,
-        data: following,
+        data: followings,
         message: "Seguindo obtidos com sucesso!",
       });
     } catch (error) {

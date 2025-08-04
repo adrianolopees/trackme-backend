@@ -80,7 +80,7 @@ export const followService = {
       await followRepository.getFollowing(profileId, page, limit);
 
     return {
-      following: following.map(toSafeProfile),
+      followings: following.map(toSafeProfile),
       total,
       totalPages,
       currentPage,
