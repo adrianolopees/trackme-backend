@@ -91,4 +91,21 @@ export const profileController = {
       next(error);
     }
   },
+
+  async searchProfiles(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { q } = req.query;
+      const profileId = req.profile?.id;
+
+      if (!q || typeof q !== "string" || typeof profileId !== "number") {
+        res.status(400).json({ success: false, message: "  Query inválida" });
+        return;
+      }
+
+      const profilesFound = await profileService.searchProfiles(q, profileId);
+      res.json({ success: true, data: profilesFound });
+    } catch (error) {
+      next(error);
+    }
+  },
 };

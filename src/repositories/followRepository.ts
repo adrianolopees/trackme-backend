@@ -98,4 +98,13 @@ export const followRepository = {
       totalPages,
     };
   },
+
+  async getFollowingIds(profileId: number): Promise<number[]> {
+    const following = await Follow.findAll({
+      where: { followerProfileId: profileId },
+      attributes: ["followingProfileId"],
+    });
+
+    return following.map((f) => f.followingProfileId);
+  },
 };

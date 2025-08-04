@@ -13,4 +13,6 @@ router.put(
   profileController.updateMyProfile
 );
 
+router.get("/search", authMiddleware, profileController.searchProfiles);
+
 export default router;
