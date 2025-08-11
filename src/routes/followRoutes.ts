@@ -12,7 +12,7 @@ router.get(
 router.get(
   "/:profileId/following",
   authMiddleware,
-  followController.getFollowing
+  followController.getFollowings
 );
 
 // Rotas de ação DEPOIS

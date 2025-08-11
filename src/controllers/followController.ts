@@ -126,7 +126,7 @@ export const followController = {
     }
   },
 
-  async getFollowing(req: Request, res: Response, next: NextFunction) {
+  async getFollowings(req: Request, res: Response, next: NextFunction) {
     try {
       const validation = validateData(FollowParamsSchema, req.params);
       if (!validation.success) {
@@ -160,7 +160,7 @@ export const followController = {
         return;
       }
 
-      const followings = await followService.getFollowing(
+      const followings = await followService.getFollowings(
         profileId,
         pageNumber,
         limitNumber
