@@ -107,4 +107,18 @@ export const followRepository = {
 
     return following.map((f) => f.followingProfileId);
   },
+
+  // Novo: Contar followers
+  async countFollowers(profileId: number): Promise<number> {
+    return await Follow.count({
+      where: { followingProfileId: profileId },
+    });
+  },
+
+  // Novo: Contar following
+  async countFollowing(profileId: number): Promise<number> {
+    return await Follow.count({
+      where: { followerProfileId: profileId },
+    });
+  },
 };

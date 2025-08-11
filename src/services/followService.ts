@@ -86,4 +86,20 @@ export const followService = {
       currentPage,
     };
   },
+
+  async getFollowersCount(profileId: number): Promise<number> {
+    const profile = await profileRepository.findById(profileId);
+    if (!profile) {
+      throw createAppError("Perfil não encontrado", 404);
+    }
+    return await followRepository.countFollowers(profileId);
+  },
+
+  async getFollowingCount(profileId: number): Promise<number> {
+    const profile = await profileRepository.findById(profileId);
+    if (!profile) {
+      throw createAppError("Perfil não encontrado", 404);
+    }
+    return await followRepository.countFollowing(profileId);
+  },
 };

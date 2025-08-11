@@ -15,6 +15,17 @@ router.get(
   followController.getFollowings
 );
 
+router.get(
+  "/:profileId/followers-count",
+  authMiddleware,
+  followController.getFollowersCount
+);
+router.get(
+  "/:profileId/following-count",
+  authMiddleware,
+  followController.getFollowingCount
+);
+
 // Rotas de ação DEPOIS
 router.post("/:profileId", authMiddleware, followController.followProfile);
 

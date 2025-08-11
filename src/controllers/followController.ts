@@ -161,4 +161,54 @@ export const followController = {
       next(error);
     }
   },
+
+  async getFollowersCount(req: Request, res: Response, next: NextFunction) {
+    try {
+      const validation = validateData(FollowParamsSchema, req.params);
+      if (!validation.success) {
+        res.status(400).json({
+          success: false,
+          message: "Dados inválidos",
+          errors: validation.issues,
+        });
+        return;
+      }
+
+      const profileId = validation.data.profileId;
+      const count = await followService.getFollowersCount(profileId);
+
+      res.status(200).json({
+        success: true,
+        data: { followersTotal: count },
+        message: "Total de seguidores obtido com sucesso!",
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  async getFollowingCount(req: Request, res: Response, next: NextFunction) {
+    try {
+      const validation = validateData(FollowParamsSchema, req.params);
+      if (!validation.success) {
+        res.status(400).json({
+          success: false,
+          message: "Dados inválidos",
+          errors: validation.issues,
+        });
+        return;
+      }
+
+      const profileId = validation.data.profileId;
+      const count = await followService.getFollowingCount(profileId);
+
+      res.status(200).json({
+        success: true,
+        data: { followingTotal: count },
+        message: "Total de seguindo obtido com sucesso!",
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
 };
