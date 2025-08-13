@@ -12,7 +12,7 @@ router.get(
 router.get(
   "/:profileId/following",
   authMiddleware,
-  followController.getFollowings
+  followController.getFollowing
 );
 
 router.get(

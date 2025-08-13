@@ -70,7 +70,7 @@ export const followService = {
     };
   },
 
-  async getFollowings(profileId: number, page: number, limit: number) {
+  async getFollowing(profileId: number, page: number, limit: number) {
     const profile = await profileRepository.findById(profileId);
     if (!profile) {
       throw createAppError("Perfil não encontrado", 404);

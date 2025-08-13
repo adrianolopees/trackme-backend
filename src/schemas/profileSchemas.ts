@@ -22,12 +22,12 @@ export const ProfileSchema = z.object({
 export const SafeProfileSchema = ProfileSchema.omit({ password: true });
 export type SafeProfile = z.infer<typeof SafeProfileSchema>;
 
-export const SafeUserSchema = ProfileSchema.omit({
+export const PublicProfileSchema = ProfileSchema.omit({
   password: true,
   email: true,
   profileSetupDone: true,
 });
-export type SafeUser = z.infer<typeof SafeUserSchema>;
+export type PublicProfile = z.infer<typeof PublicProfileSchema>;
 
 export const ProfileDataSchema = z.object({
   profile: SafeProfileSchema,

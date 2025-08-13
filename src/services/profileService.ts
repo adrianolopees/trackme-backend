@@ -6,15 +6,12 @@ import { createAppError } from "../middleware/errorHandler";
 import { followRepository } from "../repositories/followRepository";
 
 export const profileService = {
-  async getProfile(id: number): Promise<ProfileData> {
+  async getProfile(id: number): Promise<SafeProfile> {
     const profile = await profileRepository.findById(id);
     if (!profile) {
       throw createAppError("Perfil não encontrado", 404);
     }
-    const safeProfile = toSafeProfile(profile);
-    return {
-      profile: safeProfile,
-    };
+    return toSafeProfile(profile);
   },
 
   async updateProfile(

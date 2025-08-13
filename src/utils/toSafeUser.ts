@@ -1,7 +1,7 @@
 import { Profile } from "../models/Profile";
-import { SafeUser } from "../schemas/profileSchemas";
+import { PublicProfile } from "../schemas/profileSchemas";
 
-export function toSafeUser(profile: Profile): SafeUser {
+export function toPublicProfile(profile: Profile): PublicProfile {
   return {
     id: profile.id,
     username: profile.username,

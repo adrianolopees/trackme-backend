@@ -1,6 +1,6 @@
 import { profileRepository } from "../repositories/profileRepository";
 import { followRepository } from "../repositories/followRepository";
-import { toSafeUser } from "../utils/toSafeUser";
+import { toPublicProfile } from "../utils/toSafeUser";
 import { Request, Response } from "express";
 import { validateData } from "../utils/validateData";
 import { UserParamsSchema } from "../schemas/followSchemas";
@@ -29,7 +29,7 @@ export const userController = {
       const followingsTotal = await followRepository.countFollowing(userId);
 
       return res.json({
-        data: toSafeUser(profile),
+        data: toPublicProfile(profile),
         followersTotal,
         followingsTotal,
       });
