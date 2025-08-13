@@ -5,7 +5,6 @@ import {
 } from "../schemas/followSchemas";
 import { followService } from "../services/followService";
 import { validateData } from "../utils/validateData";
-import { success } from "zod/v4";
 
 export const followController = {
   async followProfile(req: Request, res: Response, next: NextFunction) {

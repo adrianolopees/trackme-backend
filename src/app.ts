@@ -3,6 +3,7 @@ import cors from "cors";
 import authRoutes from "./routes/authRoutes";
 import profileRoutes from "./routes/profileRoutes";
 import followRoutes from "./routes/followRoutes";
+import userRoutes from "./routes/userRoutes";
 import { errorHandler } from "./middleware/errorHandler";
 
 const app = express();
@@ -23,6 +24,7 @@ app.use(express.json());
 app.use("/api/auth", authRoutes); // Rotas de autenticação
 app.use("/api/profile", profileRoutes); // Rotas de perfil
 app.use("/api/follow", followRoutes); // Rotas de seguir/seguir
+app.use("/api/users", userRoutes);
 
 app.use(errorHandler);
 
