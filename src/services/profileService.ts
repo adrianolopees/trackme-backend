@@ -37,11 +37,12 @@ export const profileService = {
     const followingsTotal = await followRepository.countFollowing(id);
 
     return {
-      publicProfile: toPublicProfile(profile),
+      data: toPublicProfile(profile),
       followersTotal,
       followingsTotal,
     };
   },
+
   async searchProfiles(query: string, currentProfileId: number) {
     const profiles = await profileRepository.searchByQueryExcludeProfile(
       query,

@@ -28,7 +28,7 @@ export const PublicProfileSchema = ProfileSchema.omit({
 export type PublicProfile = z.infer<typeof PublicProfileSchema>;
 
 export const PublicProfileResponseSchema = z.object({
-  publicProfile: PublicProfileSchema,
+  data: PublicProfileSchema,
   followersTotal: z.number(),
   followingsTotal: z.number(),
 });
