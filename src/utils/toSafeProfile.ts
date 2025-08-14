@@ -16,3 +16,5 @@ export function toSafeProfile(profile: Profile): SafeProfile {
     updatedAt: profile.updatedAt,
   };
 }
+
+export default toSafeProfile;

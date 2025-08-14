@@ -12,6 +12,7 @@ router.put(
   upload.single("avatar"),
   profileController.updateMyProfile
 );
+router.get("/:id", profileController.getProfileById as any);
 
 router.get("/search", authMiddleware, profileController.searchProfiles);
 

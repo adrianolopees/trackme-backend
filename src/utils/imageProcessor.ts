@@ -49,3 +49,4 @@ export const imageProcessor = {
     }
   },
 };
+export default imageProcessor;

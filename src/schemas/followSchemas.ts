@@ -6,9 +6,6 @@ export const FollowParamsSchema = z.object({
     .int()
     .positive({ message: "ID do perfil deve ser um número positivo" }),
 });
-export const UserParamsSchema = z.object({
-  id: z.coerce.number(),
-});
 
 export const PaginationQuerySchema = z.object({
   page: z.coerce

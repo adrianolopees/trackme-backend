@@ -5,6 +5,12 @@ import { ProfileUpdateData } from "../schemas/profileSchemas";
 import { validateData } from "../utils/validateData";
 import { imageProcessor } from "../utils/imageProcessor";
 
+import { profileRepository } from "../repositories/profileRepository";
+import { followRepository } from "../repositories/followRepository";
+import { toPublicProfile } from "../utils/toPublicProfile";
+import { IdParamsSchema } from "../schemas/profileSchemas";
+import { success } from "zod/v4";
+
 export const profileController = {
   async getMyProfile(req: Request, res: Response, next: NextFunction) {
     try {
@@ -107,5 +113,29 @@ export const profileController = {
     } catch (error) {
       next(error);
     }
+  },
+
+  async getProfileById(req: Request, res: Response) {
+    try {
+      const validation = validateData(IdParamsSchema, req.params);
+      if (!validation.success) {
+        res.status(400).json({
+          success: false,
+          message: "Dados inválidos",
+          errors: validation.issues,
+        });
+        return;
+      }
+
+      const id = validation.data.id;
+
+      const publicProfile = await profileService.getProfileById(id);
+
+      return res.status(200).json({
+        success: true,
+        data: publicProfile,
+        message: "Perfil recuperado com sucesso",
+      });
+    } catch (error) {}
   },
 };

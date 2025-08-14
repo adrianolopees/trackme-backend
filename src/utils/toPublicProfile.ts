@@ -14,3 +14,5 @@ export function toPublicProfile(profile: Profile): PublicProfile {
     updatedAt: profile.updatedAt,
   };
 }
+
+export default toPublicProfile;

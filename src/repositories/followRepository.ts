@@ -1,5 +1,4 @@
-import { Follow } from "../models/Follow";
-import { Profile } from "../models";
+import { Profile, Follow } from "../models";
 
 type FollowWithFollower = Follow & {
   follower: Profile;

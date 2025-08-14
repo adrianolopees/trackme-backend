@@ -18,3 +18,5 @@ export const validateData = <T>(
     issues: result.error.format(),
   };
 };
+
+export default validateData;

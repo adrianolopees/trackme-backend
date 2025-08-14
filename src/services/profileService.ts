@@ -1,9 +1,9 @@
-import { SafeProfile, ProfileData } from "../schemas/profileSchemas";
-import { profileRepository } from "../repositories/profileRepository";
-import { toSafeProfile } from "../utils/toSafeProfile";
+import { PublicProfileResponse, SafeProfile } from "../schemas/profileSchemas";
 import { ProfileUpdateData } from "../schemas/profileSchemas";
-import { createAppError } from "../middleware/errorHandler";
+import { toPublicProfile, toSafeProfile } from "../utils";
+import { profileRepository } from "../repositories/profileRepository";
 import { followRepository } from "../repositories/followRepository";
+import { createAppError } from "../middleware/errorHandler";
 
 export const profileService = {
   async getProfile(id: number): Promise<SafeProfile> {
@@ -27,6 +27,21 @@ export const profileService = {
     return toSafeProfile(updatedProfile);
   },
 
+  async getProfileById(id: number): Promise<PublicProfileResponse> {
+    const profile = await profileRepository.findById(id);
+    if (!profile) {
+      throw createAppError("Perfil não encontrado", 404);
+    }
+
+    const followersTotal = await followRepository.countFollowers(id);
+    const followingsTotal = await followRepository.countFollowing(id);
+
+    return {
+      publicProfile: toPublicProfile(profile),
+      followersTotal,
+      followingsTotal,
+    };
+  },
   async searchProfiles(query: string, currentProfileId: number) {
     const profiles = await profileRepository.searchByQueryExcludeProfile(
       query,
