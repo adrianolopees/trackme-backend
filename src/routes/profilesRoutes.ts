@@ -14,6 +14,4 @@ router.put(
 );
 router.get("/:id", profileController.getProfileById as any);
 
-router.get("/search", authMiddleware, profileController.searchProfiles);
-
 export default router;
