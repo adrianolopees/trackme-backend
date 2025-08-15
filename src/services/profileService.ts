@@ -42,24 +42,4 @@ export const profileService = {
       followingsTotal,
     };
   },
-
-  async searchProfiles(query: string, currentProfileId: number) {
-    const profiles = await profileRepository.searchByQueryExcludeProfile(
-      query,
-      currentProfileId
-    );
-
-    const followingsIds = await followRepository.getFollowingIds(
-      currentProfileId
-    );
-    const followingSet = new Set(followingsIds);
-
-    // Monta o resultado com a flag `isFollowing`
-    return profiles.map((profile) => ({
-      id: profile.id,
-      username: profile.username,
-      avatar: profile.avatar,
-      isFollowing: followingSet.has(profile.id),
-    }));
-  },
 };

@@ -5,11 +5,7 @@ import { ProfileUpdateData } from "../schemas/profileSchemas";
 import { validateData } from "../utils/validateData";
 import { imageProcessor } from "../utils/imageProcessor";
 
-import { profileRepository } from "../repositories/profileRepository";
-import { followRepository } from "../repositories/followRepository";
-import { toPublicProfile } from "../utils/toPublicProfile";
 import { IdParamsSchema } from "../schemas/profileSchemas";
-import { success } from "zod/v4";
 
 export const profileController = {
   async getMyProfile(req: Request, res: Response, next: NextFunction) {
@@ -93,23 +89,6 @@ export const profileController = {
         data: updatedProfile,
         message: "Perfil atualizado com sucesso",
       });
-    } catch (error) {
-      next(error);
-    }
-  },
-
-  async searchProfiles(req: Request, res: Response, next: NextFunction) {
-    try {
-      const { q } = req.query;
-      const profileId = req.profile?.id;
-
-      if (!q || typeof q !== "string" || typeof profileId !== "number") {
-        res.status(400).json({ success: false, message: "  Query inválida" });
-        return;
-      }
-
-      const profilesFound = await profileService.searchProfiles(q, profileId);
-      res.json({ success: true, data: profilesFound });
     } catch (error) {
       next(error);
     }
