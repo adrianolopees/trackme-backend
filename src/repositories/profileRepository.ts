@@ -1,7 +1,7 @@
 import { Profile } from "../models/Profile";
 import { Follow } from "../models/Follow";
 import { RegisterData } from "../schemas/authSchemas";
-import { ProfileUpdateData } from "../schemas/profileSchemas";
+import { ProfileUpdateData, PublicProfile } from "../schemas/profileSchemas";
 import { Op, literal } from "sequelize";
 
 export const profileRepository = {
@@ -44,24 +44,34 @@ export const profileRepository = {
       ];
     }
 
-    return await Profile.findAndCountAll({
+    const result = await Profile.findAndCountAll({
       where: whereClause,
       attributes: ["id", "username", "name", "avatar", "bio"], // Adicione campos úteis para o front-end (ex.: bio para preview)
       include: [
         {
           model: Follow,
-          as: "followers", // Assumindo alias para o relacionamento (ajuste conforme seu modelo)
-          where: { followerId: authProfileId }, // Verifica se já segue
+          as: "following", // Assumindo alias para o relacionamento (ajuste conforme seu modelo)
+          where: { followerProfileId: authProfileId }, // Verifica se já segue
           required: false, // Left join para incluir não seguidos
         },
       ],
+
       // Filtra para não seguidos: onde o follow não existe
-      having: literal('COUNT("followers"."id") = 0'), // Conta follows == 0 (não segue)
+      having: literal(`COUNT("following"."followerProfileId") = 0`),
       group: ["Profile.id"], // Group by para o having funcionar
       order: [["username", "ASC"]], // Ordena alfabeticamente (pode ajustar)
       limit,
       offset,
     });
+
+    const count = Array.isArray(result.count)
+      ? result.count.length
+      : result.count;
+
+    return {
+      count,
+      rows: result.rows,
+    };
   },
 
   async searchByQueryExcludeProfile(query: string, excludeProfileId: number) {

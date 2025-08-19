@@ -6,6 +6,7 @@ import { validateData } from "../utils/validateData";
 import { imageProcessor } from "../utils/imageProcessor";
 
 import { IdParamsSchema } from "../schemas/profileSchemas";
+import { PaginationQuerySchema } from "../schemas/followSchemas";
 
 export const profileController = {
   async getMyProfile(req: Request, res: Response, next: NextFunction) {
@@ -116,5 +117,43 @@ export const profileController = {
         message: "Perfil recuperado com sucesso",
       });
     } catch (error) {}
+  },
+
+  async findNotFollowed(req: Request, res: Response, next: NextFunction) {
+    try {
+      const authProfileId = req.profile?.id;
+      if (!authProfileId) {
+        res.status(401).json({ success: false, message: "Não autorizado" });
+        return;
+      }
+
+      const queryValidation = validateData(PaginationQuerySchema, req.query);
+      if (!queryValidation.success) {
+        res.status(400).json({
+          success: false,
+          message: "Parâmetros de paginação inválidos",
+          errors: queryValidation.issues,
+        });
+        return;
+      }
+
+      const { query = "", page = 1, limit = 10 } = queryValidation.data;
+      const pageNumber = Number(page);
+      const limitNumber = Number(limit);
+
+      const result = await profileService.getProfilesNotFollowedBy(
+        authProfileId,
+        query,
+        pageNumber,
+        limitNumber
+      );
+      return res.status(200).json({
+        success: true,
+        data: result,
+        message: "Lista de perfis não seguidos recuperada com sucesso!",
+      });
+    } catch (error) {
+      next(error);
+    }
   },
 };

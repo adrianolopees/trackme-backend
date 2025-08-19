@@ -95,16 +95,16 @@ export const followController = {
       }
       const profileId = paramsValidation.data.profileId;
 
-      const queyValidation = validateData(PaginationQuerySchema, req.query);
-      if (!queyValidation.success) {
+      const queryValidation = validateData(PaginationQuerySchema, req.query);
+      if (!queryValidation.success) {
         res.status(400).json({
           success: false,
           message: "Parâmetros de paginação inválidos",
-          errors: queyValidation.issues,
+          errors: queryValidation.issues,
         });
         return;
       }
-      const { page, limit } = queyValidation.data;
+      const { page, limit } = queryValidation.data;
       const followers = await followService.getFollowers(
         profileId,
         page!,

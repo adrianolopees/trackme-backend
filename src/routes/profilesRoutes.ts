@@ -12,6 +12,11 @@ router.put(
   upload.single("avatar"),
   profileController.updateMyProfile
 );
+router.get(
+  "/not-followed",
+  authMiddleware,
+  profileController.findNotFollowed as any
+);
 router.get("/:id", profileController.getProfileById as any);
 
 export default router;

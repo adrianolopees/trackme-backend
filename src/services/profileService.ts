@@ -4,6 +4,7 @@ import { toPublicProfile, toSafeProfile } from "../utils";
 import { profileRepository } from "../repositories/profileRepository";
 import { followRepository } from "../repositories/followRepository";
 import { createAppError } from "../middleware/errorHandler";
+import { PaginatedNotFollowed } from "../schemas/followSchemas";
 
 export const profileService = {
   async getProfile(id: number): Promise<SafeProfile> {
@@ -40,6 +41,32 @@ export const profileService = {
       data: toPublicProfile(profile),
       followersTotal,
       followingsTotal,
+    };
+  },
+
+  async getProfilesNotFollowedBy(
+    authProfileId: number,
+    query: string,
+    page: number,
+    limit: number
+  ) {
+    const { count, rows } = await profileRepository.findProfilesNotFollowedBy(
+      authProfileId,
+      query,
+      page,
+      limit
+    );
+
+    const notFollowedProfiles = rows.map((profile: any) =>
+      toPublicProfile(profile)
+    );
+
+    const totalCount = Array.isArray(count) ? count.length : count;
+    return {
+      profiles: notFollowedProfiles,
+      total: totalCount,
+      currentPage: page,
+      totalPages: Math.ceil(totalCount / limit),
     };
   },
 };

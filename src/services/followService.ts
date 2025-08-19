@@ -2,6 +2,7 @@ import { createAppError } from "../middleware/errorHandler";
 import { profileRepository } from "../repositories/profileRepository";
 import { followRepository } from "../repositories/followRepository";
 import { toSafeProfile } from "../utils/toSafeProfile";
+import { PaginatedList } from "../schemas/followSchemas";
 
 export const followService = {
   async follow(currentProfileId: number, targetProfileId: number) {
@@ -53,7 +54,11 @@ export const followService = {
     return targetProfileId;
   },
 
-  async getFollowers(profileId: number, page: number, limit: number) {
+  async getFollowers(
+    profileId: number,
+    page: number,
+    limit: number
+  ): Promise<PaginatedList> {
     const profile = await profileRepository.findById(profileId);
     if (!profile) {
       throw createAppError("Perfil não encontrado", 404);
@@ -70,7 +75,11 @@ export const followService = {
     };
   },
 
-  async getFollowing(profileId: number, page: number, limit: number) {
+  async getFollowing(
+    profileId: number,
+    page: number,
+    limit: number
+  ): Promise<PaginatedList> {
     const profile = await profileRepository.findById(profileId);
     if (!profile) {
       throw createAppError("Perfil não encontrado", 404);
