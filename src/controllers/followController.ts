@@ -107,8 +107,8 @@ export const followController = {
       const { page, limit } = queryValidation.data;
       const followers = await followService.getFollowers(
         profileId,
-        page!,
-        limit!
+        page,
+        limit
       );
 
       res.status(200).json({
@@ -147,8 +147,8 @@ export const followController = {
 
       const followings = await followService.getFollowing(
         profileId,
-        page!,
-        limit!
+        page,
+        limit
       );
 
       res.status(200).json({

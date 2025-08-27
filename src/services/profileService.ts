@@ -4,7 +4,6 @@ import { toPublicProfile, toSafeProfile } from "../utils";
 import { profileRepository } from "../repositories/profileRepository";
 import { followRepository } from "../repositories/followRepository";
 import { createAppError } from "../middleware/errorHandler";
-import { PaginatedNotFollowed } from "../schemas/followSchemas";
 
 export const profileService = {
   async getProfile(id: number): Promise<SafeProfile> {
