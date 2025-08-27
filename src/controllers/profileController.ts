@@ -137,15 +137,13 @@ export const profileController = {
         return;
       }
 
-      const { query = "", page = 1, limit = 10 } = queryValidation.data;
-      const pageNumber = Number(page);
-      const limitNumber = Number(limit);
+      const { query = "", page, limit } = queryValidation.data;
 
       const result = await profileService.getProfilesNotFollowedBy(
         authProfileId,
         query,
-        pageNumber,
-        limitNumber
+        page,
+        limit
       );
       return res.status(200).json({
         success: true,
