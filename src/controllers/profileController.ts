@@ -1,11 +1,12 @@
 import { Request, Response, NextFunction } from "express";
 import { profileService } from "../services/profileService";
-import { ProfileUpdateSchema } from "../schemas/profileSchemas";
-import { ProfileUpdateData } from "../schemas/profileSchemas";
 import { validateData } from "../utils/validateData";
 import { imageProcessor } from "../utils/imageProcessor";
-
-import { IdParamsSchema } from "../schemas/profileSchemas";
+import {
+  ProfileUpdateSchema,
+  ProfileUpdateData,
+  IdParamsSchema,
+} from "../schemas/profileSchemas";
 import { PaginationQuerySchema } from "../schemas/followSchemas";
 
 export const profileController = {

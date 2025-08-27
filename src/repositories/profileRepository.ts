@@ -1,5 +1,4 @@
-import { Profile } from "../models/Profile";
-import { Follow } from "../models/Follow";
+import { Profile, Follow } from "../models";
 import { RegisterData } from "../schemas/authSchemas";
 import {
   ProfileUpdateData,
