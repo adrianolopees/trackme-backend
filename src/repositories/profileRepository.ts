@@ -1,20 +1,15 @@
 import { Profile } from "../models/Profile";
 import { Follow } from "../models/Follow";
 import { RegisterData } from "../schemas/authSchemas";
-import { ProfileUpdateData } from "../schemas/profileSchemas";
+import {
+  ProfileUpdateData,
+  FindAndCountResponse,
+} from "../schemas/profileSchemas";
 import { Op } from "sequelize";
 
 export const profileRepository = {
   async create(registerData: RegisterData) {
     return await Profile.create(registerData);
-  },
-
-  async findById(id: number) {
-    return await Profile.findByPk(id);
-  },
-
-  async findByEmail(email: string) {
-    return await Profile.findOne({ where: { email } });
   },
 
   async update(id: number, updates: ProfileUpdateData) {
@@ -25,12 +20,20 @@ export const profileRepository = {
     return await Profile.destroy({ where: { id } });
   },
 
+  async findById(id: number) {
+    return await Profile.findByPk(id);
+  },
+
+  async findByEmail(email: string) {
+    return await Profile.findOne({ where: { email } });
+  },
+
   async findProfilesNotFollowedBy(
     authProfileId: number,
     query: string = "",
     page: number = 1,
     limit: number = 10
-  ) {
+  ): Promise<FindAndCountResponse> {
     const offset = (page - 1) * limit;
 
     // filtros base
@@ -70,18 +73,5 @@ export const profileRepository = {
       count: result.count,
       rows: result.rows,
     };
-  },
-
-  async searchByQueryExcludeProfile(query: string, excludeProfileId: number) {
-    return await Profile.findAll({
-      where: {
-        [Op.or]: [
-          { username: { [Op.iLike]: `%${query}%` } },
-          { name: { [Op.iLike]: `%${query}%` } },
-        ],
-        id: { [Op.ne]: excludeProfileId },
-      },
-      attributes: ["id", "username", "avatar"],
-    });
   },
 };

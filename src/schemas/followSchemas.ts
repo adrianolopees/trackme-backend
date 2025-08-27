@@ -1,18 +1,6 @@
 import { z } from "zod";
 import { PublicProfileSchema } from "./profileSchemas";
-export const ProfileDBSchema = z.object({
-  id: z.number(),
-  username: z.string(),
-  name: z.string(),
-  bio: z.string().nullable().optional(),
-  avatar: z.instanceof(Buffer).nullable().optional(),
-  createdAt: z.date(),
-  updatedAt: z.date(),
-});
-export const FindAndCountResult = z.object({
-  count: z.number(),
-  rows: z.array(ProfileDBSchema),
-});
+
 export const FollowParamsSchema = z.object({
   profileId: z.coerce
     .number()
@@ -50,9 +38,6 @@ export const PaginatedNotFollowedSchema = z.object({
   totalPages: z.number().int().min(1),
 });
 
-export type ProfileRepositoryResult = z.infer<typeof ProfileDBSchema>;
-
-export type FindAndCountResponse = z.infer<typeof FindAndCountResult>;
 export type PaginatedNotFollowed = z.infer<typeof PaginatedNotFollowedSchema>;
 
 export type PaginatedList = z.infer<typeof PaginatedListSchema>;
