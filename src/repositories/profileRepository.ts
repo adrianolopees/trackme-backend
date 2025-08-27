@@ -1,8 +1,8 @@
 import { Profile } from "../models/Profile";
 import { Follow } from "../models/Follow";
 import { RegisterData } from "../schemas/authSchemas";
-import { ProfileUpdateData, PublicProfile } from "../schemas/profileSchemas";
-import { Op, literal } from "sequelize";
+import { ProfileUpdateData } from "../schemas/profileSchemas";
+import { Op } from "sequelize";
 
 export const profileRepository = {
   async create(registerData: RegisterData) {
@@ -33,8 +33,9 @@ export const profileRepository = {
   ) {
     const offset = (page - 1) * limit;
 
+    // filtros base
     const whereClause: any = {
-      id: { [Op.ne]: authProfileId }, // Exclui o próprio usuário
+      id: { [Op.ne]: authProfileId }, // exclui o próprio usuário
     };
 
     if (query.trim()) {
@@ -44,32 +45,29 @@ export const profileRepository = {
       ];
     }
 
+    // adiciona o filtro de não seguido
+    whereClause["$followers.followerProfileId$"] = null;
+
     const result = await Profile.findAndCountAll({
       where: whereClause,
-      attributes: ["id", "username", "name", "avatar", "bio"], // Adicione campos úteis para o front-end (ex.: bio para preview)
+      attributes: ["id", "username", "name", "avatar", "bio"],
       include: [
         {
           model: Follow,
-          as: "following", // Assumindo alias para o relacionamento (ajuste conforme seu modelo)
-          where: { followerProfileId: authProfileId }, // Verifica se já segue
-          required: false, // Left join para incluir não seguidos
+          as: "followers", // join usando quem segue esse profile
+          attributes: [],
+          where: { followerProfileId: authProfileId },
+          required: false, // LEFT JOIN
         },
       ],
-
-      // Filtra para não seguidos: onde o follow não existe
-      having: literal(`COUNT("following"."followerProfileId") = 0`),
-      group: ["Profile.id"], // Group by para o having funcionar
-      order: [["username", "ASC"]], // Ordena alfabeticamente (pode ajustar)
+      order: [["username", "ASC"]],
       limit,
       offset,
+      subQuery: false,
     });
 
-    const count = Array.isArray(result.count)
-      ? result.count.length
-      : result.count;
-
     return {
-      count,
+      count: result.count,
       rows: result.rows,
     };
   },
