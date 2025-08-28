@@ -12,12 +12,7 @@ import { PaginationQuerySchema } from "../schemas/followSchemas";
 export const profileController = {
   async getMyProfile(req: Request, res: Response, next: NextFunction) {
     try {
-      const profileId = req.profile?.id;
-      if (!profileId) {
-        res.status(401).json({ success: false, message: "Não autorizado" });
-        return;
-      }
-
+      const profileId = req.profile.id;
       const profile = await profileService.getProfile(profileId);
       res.status(200).json({
         success: true,
@@ -31,12 +26,7 @@ export const profileController = {
 
   async updateMyProfile(req: Request, res: Response, next: NextFunction) {
     try {
-      const profileId = req.profile?.id;
-      if (!profileId) {
-        res.status(401).json({ success: false, message: "Não autorizado" });
-        return;
-      }
-
+      const profileId = req.profile.id;
       const { bio, profileSetupDone } = req.body;
       const validation = validateData(ProfileUpdateSchema, { bio });
       if (!validation.success) {
@@ -122,12 +112,7 @@ export const profileController = {
 
   async findNotFollowed(req: Request, res: Response, next: NextFunction) {
     try {
-      const authProfileId = req.profile?.id;
-      if (!authProfileId) {
-        res.status(401).json({ success: false, message: "Não autorizado" });
-        return;
-      }
-
+      const authProfileId = req.profile.id;
       const queryValidation = validateData(PaginationQuerySchema, req.query);
       if (!queryValidation.success) {
         res.status(400).json({

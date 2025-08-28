@@ -14,8 +14,12 @@ export const authMiddleware: RequestHandler = (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, JWT_SECRET!) as JwtPayload;
-    req.profile = { id: decoded.id };
+    const id = parseInt(decoded.id, 10);
+    if (isNaN(id)) {
+      throw new Error("ID inválido no token");
+    }
 
+    req.profile = { id };
     next();
   } catch (error) {
     res.status(401).json({ message: "Token inválido ou expirado" });
