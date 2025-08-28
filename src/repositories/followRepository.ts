@@ -98,14 +98,12 @@ export const followRepository = {
     };
   },
 
-  // Contar followers
   async countFollowers(profileId: number): Promise<number> {
     return await Follow.count({
       where: { followingProfileId: profileId },
     });
   },
 
-  // Contar following
   async countFollowing(profileId: number): Promise<number> {
     return await Follow.count({
       where: { followerProfileId: profileId },

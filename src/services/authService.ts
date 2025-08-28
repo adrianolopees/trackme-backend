@@ -31,7 +31,7 @@ export const authService = {
     });
 
     const token = this.generateToken({
-      id: newProfile.id,
+      id: String(newProfile.id),
       username: newProfile.username,
       email: newProfile.email,
     });
@@ -58,7 +58,7 @@ export const authService = {
     }
 
     const token = this.generateToken({
-      id: profile.id,
+      id: String(profile.id),
       username: profile.username,
       email: profile.email,
     });
@@ -80,7 +80,6 @@ export const authService = {
     if (!JWT_SECRET) {
       throw new Error("JWT_SECRET não está configurado");
     }
-
     return jwt.sign(payload, JWT_SECRET, { expiresIn: "24h" });
   },
 };
