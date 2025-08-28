@@ -98,23 +98,14 @@ export const followRepository = {
     };
   },
 
-  async getFollowingIds(profileId: number): Promise<number[]> {
-    const following = await Follow.findAll({
-      where: { followerProfileId: profileId },
-      attributes: ["followingProfileId"],
-    });
-
-    return following.map((f) => f.followingProfileId);
-  },
-
-  // Novo: Contar followers
+  // Contar followers
   async countFollowers(profileId: number): Promise<number> {
     return await Follow.count({
       where: { followingProfileId: profileId },
     });
   },
 
-  // Novo: Contar following
+  // Contar following
   async countFollowing(profileId: number): Promise<number> {
     return await Follow.count({
       where: { followerProfileId: profileId },

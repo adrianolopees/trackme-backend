@@ -20,15 +20,7 @@ export const followController = {
       }
 
       const targetProfileId = validation.data.profileId;
-      const currentProfileId = req.profile?.id;
-
-      if (!currentProfileId) {
-        res.status(401).json({
-          success: false,
-          message: "Não autorizado",
-        });
-        return;
-      }
+      const currentProfileId = req.profile.id;
 
       const follow = await followService.follow(
         currentProfileId,
@@ -58,15 +50,7 @@ export const followController = {
       }
 
       const targetProfileId = validation.data.profileId;
-      const currentProfileId = req.profile?.id;
-
-      if (!currentProfileId) {
-        res.status(401).json({
-          success: false,
-          message: "Não autorizado",
-        });
-        return;
-      }
+      const currentProfileId = req.profile.id;
 
       const unfollowedId = await followService.unfollow(
         currentProfileId,

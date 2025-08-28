@@ -112,7 +112,7 @@ export const profileController = {
 
   async findNotFollowed(req: Request, res: Response, next: NextFunction) {
     try {
-      const authProfileId = req.profile.id;
+      const profileId = req.profile.id;
       const queryValidation = validateData(PaginationQuerySchema, req.query);
       if (!queryValidation.success) {
         res.status(400).json({
@@ -125,15 +125,15 @@ export const profileController = {
 
       const { query = "", page, limit } = queryValidation.data;
 
-      const result = await profileService.getProfilesNotFollowedBy(
-        authProfileId,
+      const data = await profileService.getProfilesNotFollowedBy(
+        profileId,
         query,
         page,
         limit
       );
       return res.status(200).json({
         success: true,
-        data: result,
+        data: data,
         message: "Lista de perfis não seguidos recuperada com sucesso!",
       });
     } catch (error) {
