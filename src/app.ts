@@ -22,7 +22,7 @@ app.use(express.json());
 
 app.use("/api/auth", authRoutes); // Rotas de autenticação
 app.use("/api/profiles", profilesRoutes); // Rotas de perfil
-app.use("/api/follow", followRoutes); // Rotas de seguir/seguir
+app.use("/api/profiles", followRoutes); // Rotas de seguir/seguir
 
 app.use(errorHandler);
 

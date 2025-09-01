@@ -2,10 +2,7 @@ import { z } from "zod";
 import { PublicProfileSchema } from "./profileSchemas";
 
 export const FollowParamsSchema = z.object({
-  profileId: z.coerce
-    .number()
-    .int()
-    .positive({ message: "ID do perfil deve ser um número positivo" }),
+  profileId: z.coerce.number().int().positive(),
 });
 
 export const PaginationQuerySchema = z.object({

@@ -3,32 +3,17 @@ import { followController } from "../controllers/followController";
 import { authMiddleware } from "../middleware/authMiddleware";
 
 const router = express.Router();
+router.use(authMiddleware);
 
-router.get(
-  "/:profileId/followers",
-  authMiddleware,
-  followController.getFollowers
-);
-router.get(
-  "/:profileId/following",
-  authMiddleware,
-  followController.getFollowing
-);
+// Rotas de consulta ANTES
+router.get("/:profileId/followers", followController.getFollowers);
+router.get("/:profileId/following", followController.getFollowing);
 
-router.get(
-  "/:profileId/followers-count",
-  authMiddleware,
-  followController.getFollowersCount
-);
-router.get(
-  "/:profileId/following-count",
-  authMiddleware,
-  followController.getFollowingCount
-);
+router.get("/:profileId/followers-count", followController.getFollowersCount);
+router.get("/:profileId/following-count", followController.getFollowingCount);
 
 // Rotas de ação DEPOIS
-router.post("/:profileId", authMiddleware, followController.followProfile);
-
-router.delete("/:profileId", authMiddleware, followController.unfollowProfile);
+router.post("/:profileId/follow", followController.followProfile);
+router.delete("/:profileId/follow", followController.unfollowProfile);
 
 export default router;
