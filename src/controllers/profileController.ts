@@ -86,7 +86,7 @@ export const profileController = {
     }
   },
 
-  async getProfileById(req: Request, res: Response) {
+  async getProfileById(req: Request, res: Response, next: NextFunction) {
     try {
       const validation = validateData(IdParamsSchema, req.params);
       if (!validation.success) {
@@ -107,7 +107,9 @@ export const profileController = {
         data: publicProfile,
         message: "Perfil recuperado com sucesso",
       });
-    } catch (error) {}
+    } catch (error) {
+      next(error);
+    }
   },
 
   async findNotFollowed(req: Request, res: Response, next: NextFunction) {

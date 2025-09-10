@@ -2,25 +2,17 @@ import { authService } from "../services/authService";
 import { Request, Response, NextFunction } from "express";
 import { validateData } from "../utils/validateData";
 import { RegisterSchema, LoginSchema } from "../schemas/authSchemas";
+import { sendCreated, sendSuccess, sendError } from "../utils/responseHelper";
 
 export const authController = {
   async register(req: Request, res: Response, next: NextFunction) {
     try {
       const validation = validateData(RegisterSchema, req.body);
       if (!validation.success) {
-        res.status(400).json({
-          success: false,
-          message: "Dados inválidos",
-          errors: validation.issues,
-        });
-        return;
+        return sendError(res, "Dados inválidos", 400, validation.issues);
       }
       const profile = await authService.register(validation.data);
-      res.status(201).json({
-        success: true,
-        data: profile,
-        message: "Usuário registrado com sucesso!",
-      });
+      return sendCreated(res, profile, "Usuário registrado com sucesso!");
     } catch (error) {
       next(error);
     }
