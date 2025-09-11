@@ -1,8 +1,8 @@
 import { Response } from "express";
 
-export const sendSuccess = (
+export const sendSuccess = <T>(
   res: Response,
-  data: any,
+  data: T,
   message: string = "Sucesso"
 ) => {
   return res.status(200).json({
@@ -12,10 +12,10 @@ export const sendSuccess = (
   });
 };
 
-export const sendCreated = (
+export const sendCreated = <T>(
   res: Response,
-  data: any,
-  message: String = "Criado com sucesso"
+  data: T,
+  message: string = "Criado com sucesso"
 ) => {
   return res.status(201).json({
     success: true,
@@ -26,7 +26,7 @@ export const sendCreated = (
 
 export const sendError = (
   res: Response,
-  message: String,
+  message: string,
   statusCode: number = 400,
   errors?: any
 ) => {
