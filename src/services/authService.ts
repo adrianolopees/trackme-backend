@@ -21,7 +21,7 @@ export const authService = {
     );
 
     if (existingProfile) {
-      throw createAppError("Usuário ou email já existe!", 409);
+      throw createAppError("Usuário ou email já existe!");
     }
 
     const hashedPassword = await this.hashPassword(data.password);
@@ -46,7 +46,7 @@ export const authService = {
     const profile = await authRepository.findByIdentifier(data.identifier);
 
     if (!profile) {
-      throw createAppError("Credenciais inválidas!", 401);
+      throw createAppError("Credenciais inválidas!");
     }
 
     const isPasswordValid = await this.comparePassword(
@@ -54,7 +54,7 @@ export const authService = {
       profile.password
     );
     if (!isPasswordValid) {
-      throw createAppError("Credenciais inválidas!", 401);
+      throw createAppError("Credenciais inválidas!");
     }
 
     const token = this.generateToken({

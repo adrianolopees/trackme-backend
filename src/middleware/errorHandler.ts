@@ -63,7 +63,7 @@ export const errorHandler = (
 // Factory para criar erros operacionais
 export const createAppError = (
   message: string,
-  statusCode: number
+  statusCode?: number
 ): AppError => {
   const error = new Error(message) as AppError;
   error.statusCode = statusCode;

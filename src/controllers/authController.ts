@@ -22,20 +22,11 @@ export const authController = {
     try {
       const validation = validateData(LoginSchema, req.body);
       if (!validation.success) {
-        res.status(400).json({
-          success: false,
-          message: "Dados inválidos",
-          errors: validation.issues,
-        });
-        return;
+        return sendError(res, "Dados inválidos", 400, validation.issues);
       }
 
       const token = await authService.login(validation.data);
-      res.status(200).json({
-        success: true,
-        data: token,
-        message: "Login realizado com sucesso!",
-      });
+      return sendSuccess(res, token, "Login realizado com sucesso! backend");
     } catch (error) {
       next(error);
     }
