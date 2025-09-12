@@ -62,7 +62,6 @@ export const profileController = {
         profileId,
         updateData
       );
-
       sendSuccess(res, updatedProfile, "Perfil atualizado com sucesso");
     } catch (error) {
       next(error);
@@ -78,9 +77,7 @@ export const profileController = {
       }
 
       const id = validation.data.id;
-
       const publicProfile = await profileService.getProfileById(id);
-
       sendSuccess(res, publicProfile, "Perfil recuperado com sucesso");
     } catch (error) {
       next(error);
