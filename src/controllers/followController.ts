@@ -5,17 +5,14 @@ import {
 } from "../schemas/followSchemas";
 import { followService } from "../services/followService";
 import { validateData } from "../utils/validateData";
+import { sendCreated, sendError, sendSuccess } from "../utils/responseHelper";
 
 export const followController = {
   async followProfile(req: Request, res: Response, next: NextFunction) {
     try {
       const validation = validateData(FollowParamsSchema, req.params);
       if (!validation.success) {
-        res.status(400).json({
-          success: false,
-          message: "Dados inválidos",
-          errors: validation.issues,
-        });
+        sendError(res, "Dados inválidos", 400, validation.issues);
         return;
       }
 
@@ -27,11 +24,7 @@ export const followController = {
         targetProfileId
       );
 
-      res.status(201).json({
-        success: true,
-        message: "Perfil seguido com sucesso!",
-        data: follow,
-      });
+      sendCreated(res, follow, "Perfil seguido com sucesso!");
     } catch (error) {
       next(error);
     }
@@ -41,11 +34,7 @@ export const followController = {
     try {
       const validation = validateData(FollowParamsSchema, req.params);
       if (!validation.success) {
-        res.status(400).json({
-          success: false,
-          message: "Dados inválidos",
-          errors: validation.issues,
-        });
+        sendError(res, "Dados inválidos", 400, validation.issues);
         return;
       }
 
@@ -56,11 +45,7 @@ export const followController = {
         currentProfileId,
         targetProfileId
       );
-      res.status(200).json({
-        success: true,
-        message: "Perfil deixado de seguir com sucesso!",
-        data: unfollowedId,
-      });
+      sendSuccess(res, unfollowedId, "Perfil deixado de seguir com sucesso!");
     } catch (error) {
       next(error);
     }
@@ -70,22 +55,19 @@ export const followController = {
     try {
       const paramsValidation = validateData(FollowParamsSchema, req.params);
       if (!paramsValidation.success) {
-        res.status(400).json({
-          success: false,
-          message: "Dados inválidos",
-          errors: paramsValidation.issues,
-        });
+        sendError(res, "Dados inválidos", 400, paramsValidation.issues);
         return;
       }
       const profileId = paramsValidation.data.profileId;
 
       const queryValidation = validateData(PaginationQuerySchema, req.query);
       if (!queryValidation.success) {
-        res.status(400).json({
-          success: false,
-          message: "Parâmetros de paginação inválidos",
-          errors: queryValidation.issues,
-        });
+        sendError(
+          res,
+          "Parâmetros de paginação inválidos",
+          400,
+          queryValidation.issues
+        );
         return;
       }
       const { page, limit } = queryValidation.data;
@@ -95,11 +77,7 @@ export const followController = {
         limit
       );
 
-      res.status(200).json({
-        success: true,
-        data: followers,
-        message: "Seguidores obtidos com sucesso!",
-      });
+      sendSuccess(res, followers, "Seguidores obtidos com sucesso!");
     } catch (error) {
       next(error);
     }
@@ -109,22 +87,19 @@ export const followController = {
     try {
       const paramsValidation = validateData(FollowParamsSchema, req.params);
       if (!paramsValidation.success) {
-        res.status(400).json({
-          success: false,
-          message: "Dados inválidos",
-          errors: paramsValidation.issues,
-        });
+        sendError(res, "Dados inválidos", 400, paramsValidation.issues);
         return;
       }
       const profileId = paramsValidation.data.profileId;
 
       const queryValidation = validateData(PaginationQuerySchema, req.query);
       if (!queryValidation.success) {
-        res.status(400).json({
-          success: false,
-          message: "Parâmetros de paginação inválidos",
-          errors: queryValidation.issues,
-        });
+        sendError(
+          res,
+          "Parâmetros de paginação inválidos",
+          400,
+          queryValidation.issues
+        );
         return;
       }
       const { page, limit } = queryValidation.data;
@@ -135,11 +110,7 @@ export const followController = {
         limit
       );
 
-      res.status(200).json({
-        success: true,
-        data: followings,
-        message: "Seguindo obtidos com sucesso!",
-      });
+      sendSuccess(res, followings, "Perfis seguindo obtidos com sucesso!");
     } catch (error) {
       next(error);
     }
@@ -149,22 +120,18 @@ export const followController = {
     try {
       const validation = validateData(FollowParamsSchema, req.params);
       if (!validation.success) {
-        res.status(400).json({
-          success: false,
-          message: "Dados inválidos",
-          errors: validation.issues,
-        });
+        sendError(res, "Dados inválidos", 400, validation.issues);
         return;
       }
 
       const profileId = validation.data.profileId;
       const count = await followService.getFollowersCount(profileId);
 
-      res.status(200).json({
-        success: true,
-        data: { followersTotal: count },
-        message: "Total de seguidores obtido com sucesso!",
-      });
+      sendSuccess(
+        res,
+        { followersTotal: count },
+        "Total de seguidores obtido com sucesso!"
+      );
     } catch (error) {
       next(error);
     }
@@ -174,22 +141,18 @@ export const followController = {
     try {
       const validation = validateData(FollowParamsSchema, req.params);
       if (!validation.success) {
-        res.status(400).json({
-          success: false,
-          message: "Dados inválidos",
-          errors: validation.issues,
-        });
+        sendError(res, "Dados inválidos", 400, validation.issues);
         return;
       }
 
       const profileId = validation.data.profileId;
       const count = await followService.getFollowingCount(profileId);
 
-      res.status(200).json({
-        success: true,
-        data: { followingTotal: count },
-        message: "Total de seguindo obtido com sucesso!",
-      });
+      sendSuccess(
+        res,
+        { followingTotal: count },
+        "Total de perfis seguindo obtido com sucesso!"
+      );
     } catch (error) {
       next(error);
     }
