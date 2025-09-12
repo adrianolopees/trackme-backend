@@ -9,10 +9,11 @@ export const authController = {
     try {
       const validation = validateData(RegisterSchema, req.body);
       if (!validation.success) {
-        return sendError(res, "Dados inválidos", 400, validation.issues);
+        sendError(res, "Dados inválidos", 400, validation.issues);
+        return;
       }
       const profile = await authService.register(validation.data);
-      return sendCreated(res, profile, "Usuário registrado com sucesso!");
+      sendCreated(res, profile, "Usuário registrado com sucesso!");
     } catch (error) {
       next(error);
     }
@@ -22,11 +23,12 @@ export const authController = {
     try {
       const validation = validateData(LoginSchema, req.body);
       if (!validation.success) {
-        return sendError(res, "Dados inválidos", 400, validation.issues);
+        sendError(res, "Dados inválidos", 400, validation.issues);
+        return;
       }
 
       const token = await authService.login(validation.data);
-      return sendSuccess(res, token, "Login realizado com sucesso! backend");
+      sendSuccess(res, token, "Login realizado com sucesso!");
     } catch (error) {
       next(error);
     }

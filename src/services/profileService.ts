@@ -10,7 +10,7 @@ export const profileService = {
   async getProfile(id: number): Promise<SafeProfile> {
     const profile = await profileRepository.findById(id);
     if (!profile) {
-      throw createAppError("Perfil não encontrado", 404);
+      throw createAppError("Perfil não encontrado");
     }
     return toSafeProfile(profile);
   },
@@ -23,7 +23,7 @@ export const profileService = {
     const updatedProfile = await profileRepository.findById(id);
 
     if (!updatedProfile) {
-      throw createAppError("Perfil não encontrado após atualização", 404);
+      throw createAppError("Perfil não encontrado após atualização");
     }
     return toSafeProfile(updatedProfile);
   },
@@ -31,7 +31,7 @@ export const profileService = {
   async getProfileById(id: number): Promise<PublicProfileResponse> {
     const profile = await profileRepository.findById(id);
     if (!profile) {
-      throw createAppError("Perfil não encontrado", 404);
+      throw createAppError("Perfil não encontrado");
     }
 
     const followersTotal = await followRepository.countFollowers(id);

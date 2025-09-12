@@ -8,17 +8,14 @@ import {
   IdParamsSchema,
 } from "../schemas/profileSchemas";
 import { PaginationQuerySchema } from "../schemas/followSchemas";
+import { sendError, sendSuccess } from "../utils/responseHelper";
 
 export const profileController = {
   async getMyProfile(req: Request, res: Response, next: NextFunction) {
     try {
       const profileId = req.profile.id;
       const profile = await profileService.getProfile(profileId);
-      res.status(200).json({
-        success: true,
-        data: profile,
-        message: "Perfil recuperado com sucesso",
-      });
+      sendSuccess(res, profile, "Perfil recuperado com sucesso");
     } catch (error) {
       next(error);
     }
@@ -30,11 +27,7 @@ export const profileController = {
       const { bio, profileSetupDone } = req.body;
       const validation = validateData(ProfileUpdateSchema, { bio });
       if (!validation.success) {
-        res.status(400).json({
-          success: false,
-          message: "Dados inválidos",
-          errors: validation.issues,
-        });
+        sendError(res, "Dados inválidos", 400, validation.issues);
         return;
       }
 
@@ -45,19 +38,13 @@ export const profileController = {
             req.file.buffer
           );
           if (!isValidImage) {
-            res.status(400).json({
-              success: false,
-              message: "Arquivo enviado não é uma imagem válida",
-            });
+            sendError(res, "Arquivo de imagem inválido", 400);
             return;
           }
 
           processedBuffer = await imageProcessor.processAvatar(req.file.buffer);
         } catch (imageError) {
-          res.status(400).json({
-            success: false,
-            message: "Erro ao processar imagem",
-          });
+          sendError(res, "Erro ao processar a imagem", 500);
           return;
         }
       }
@@ -76,11 +63,7 @@ export const profileController = {
         updateData
       );
 
-      res.status(200).json({
-        success: true,
-        data: updatedProfile,
-        message: "Perfil atualizado com sucesso",
-      });
+      sendSuccess(res, updatedProfile, "Perfil atualizado com sucesso");
     } catch (error) {
       next(error);
     }
@@ -90,11 +73,7 @@ export const profileController = {
     try {
       const validation = validateData(IdParamsSchema, req.params);
       if (!validation.success) {
-        res.status(400).json({
-          success: false,
-          message: "Dados inválidos",
-          errors: validation.issues,
-        });
+        sendError(res, "ID inválido", 400, validation.issues);
         return;
       }
 
@@ -102,26 +81,24 @@ export const profileController = {
 
       const publicProfile = await profileService.getProfileById(id);
 
-      return res.status(200).json({
-        success: true,
-        data: publicProfile,
-        message: "Perfil recuperado com sucesso",
-      });
+      sendSuccess(res, publicProfile, "Perfil recuperado com sucesso");
     } catch (error) {
       next(error);
     }
   },
 
+  // ainda implementar essa funcionalidade
   async findNotFollowed(req: Request, res: Response, next: NextFunction) {
     try {
       const profileId = req.profile.id;
       const queryValidation = validateData(PaginationQuerySchema, req.query);
       if (!queryValidation.success) {
-        res.status(400).json({
-          success: false,
-          message: "Parâmetros de paginação inválidos",
-          errors: queryValidation.issues,
-        });
+        sendError(
+          res,
+          "Parâmetros de consulta inválidos",
+          400,
+          queryValidation.issues
+        );
         return;
       }
 
@@ -133,11 +110,7 @@ export const profileController = {
         page,
         limit
       );
-      return res.status(200).json({
-        success: true,
-        data: data,
-        message: "Lista de perfis não seguidos recuperada com sucesso!",
-      });
+      sendSuccess(res, data, "Perfis recuperados com sucesso");
     } catch (error) {
       next(error);
     }
