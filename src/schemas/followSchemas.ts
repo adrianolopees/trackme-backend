@@ -14,15 +14,14 @@ export const PaginationQuerySchema = z.object({
   limit: z.coerce
     .number()
     .int()
-    .min(1, " Limite deve ser pelo menos 1")
-    .max(100, "Limite máximo é 100")
-    .transform((val) => (val ? Number(val) : 10)),
+    .min(1, "Limite deve ser pelo menos 1")
+    .max(100, "Limite máximo é 100"),
   query: z.string().trim().default(""),
 });
 
 export const PaginatedListSchema = z.object({
   followers: z.array(PublicProfileSchema).optional(), // Use 'optional' para o caso de 'following'
-  followings: z.array(PublicProfileSchema).optional(), // Use 'optional' para o caso de 'followers'
+  following: z.array(PublicProfileSchema).optional(), // Use 'optional' para o caso de 'followers'
   total: z.number(),
   currentPage: z.number(),
   totalPages: z.number(),
