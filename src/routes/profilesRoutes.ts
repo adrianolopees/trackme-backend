@@ -13,6 +13,6 @@ router.put(
   profileController.updateMyProfile
 );
 router.get("/not-followed", authMiddleware, profileController.findNotFollowed);
-router.get("/:id", profileController.getProfileById);
+router.get("/:id", profileController.getPublicProfile);
 
 export default router;

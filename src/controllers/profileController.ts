@@ -69,7 +69,7 @@ export const profileController = {
     }
   },
 
-  async getProfileById(req: Request, res: Response, next: NextFunction) {
+  async getPublicProfile(req: Request, res: Response, next: NextFunction) {
     try {
       const validation = validateData(IdParamsSchema, req.params);
       if (!validation.success) {
