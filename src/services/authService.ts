@@ -21,7 +21,7 @@ export const authService = {
     );
 
     if (existingProfile) {
-      throw createAppError("Usuário ou email já existe!");
+      throw createAppError("Dados de cadastro inválidos", 400);
     }
 
     const hashedPassword = await this.hashPassword(data.password);

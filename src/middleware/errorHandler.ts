@@ -12,13 +12,25 @@ export const errorHandler = (
   res: Response,
   next: NextFunction
 ): void => {
-  console.error("Error occurred:", {
-    message: error.message,
-    stack: error.stack,
-    url: req.url,
-    method: req.method,
-    timestamp: new Date().toISOString(),
-  });
+  // Log detalhado apenas em desenvolvimento
+  if (process.env.NODE_ENV === "development") {
+    console.error("Error occurred:", {
+      message: error.message,
+      stack: error.stack,
+      url: req.url,
+      method: req.method,
+      timestamp: new Date().toISOString(),
+    });
+  } else {
+    // Log seguro para produção
+    console.error("Error occurred:", {
+      statusCode: error.statusCode,
+      url: req.url,
+      method: req.method,
+      timestamp: new Date().toISOString(),
+      // Não expor mensagens sensíveis
+    });
+  }
 
   // Erro operacional conhecido
   if (error.isOperational) {
